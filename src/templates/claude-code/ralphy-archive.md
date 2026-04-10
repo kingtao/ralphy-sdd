@@ -14,7 +14,7 @@ You are archiving a completed OpenSpec change.
 3. Otherwise, move the change folder from:
    - `openspec/changes/<change-name>/`
    to:
-   - `openspec/archive/<change-name>/`
+   - `openspec/changes/archive/<change-name>/`
 4. Confirm `openspec/specs/` is updated appropriately.
 
 ## Output

@@ -143,3 +143,6 @@ vite.config.ts.timestamp-*
 
 # Local files (not tracked by git)
 .local/
+
+# ralphy-sdd runtime artifacts (STATUS, run logs, state)
+ralphy-sdd/

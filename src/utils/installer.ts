@@ -33,7 +33,7 @@ export async function ensureOpenSpecScaffold(projectDir: string): Promise<void> 
   const openspecDir = path.join(projectDir, "openspec");
   await ensureDir(path.join(openspecDir, "specs"));
   await ensureDir(path.join(openspecDir, "changes"));
-  await ensureDir(path.join(openspecDir, "archive"));
+  await ensureDir(path.join(openspecDir, "changes", "archive"));
 
   // v2+ project spec (template)
   const templatesRoot = getDistTemplatesDir();

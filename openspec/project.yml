@@ -102,12 +102,16 @@ validators:
     parser: "jest"
 
 # Tasks - define your implementation tasks here
-# Active change: integrate-openspec-cli
+# Active change: add-cli-plan-command
 tasks:
-  # 1. Core Bridge Layer
-  - id: "osc-1.1"
-    title: "Create OpenSpecBridge class with CLI detection"
-    goal: "Implement src/core/openspec/bridge.ts: detect openspec CLI on PATH, version check >= 1.0.0, provide exec() wrapper with timeout and JSON parsing"
+  # 1. CLI Surface + Parsing
+  - id: "plan-1.1"
+    title: "Add ralphy-sdd plan command entrypoint"
+    goal: |
+      Create src/cli/plan.ts with command registration and flag parsing.
+      Support: ralphy-sdd plan "prompt text" OR ralphy-sdd plan prd.md (file path if exists).
+      Flags: --dir, --backend, --artifact-dir, --ref (repeatable), --change, --json.
+      Register in src/index.ts following the same pattern as run/init/validate.
     validators: ["typecheck"]
     sprint:
       size: M
@@ -117,76 +121,28 @@ tasks:
       warning: { usd: 2.0, tokens: 150000, time_minutes: 15 }
       hard: { usd: 3.0, tokens: 250000, time_minutes: 20, max_iterations: 8 }
     files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: ["src/cli/**", "src/core/engine/**"]
-
-  - id: "osc-1.2"
-    title: "Create shared bridge types"
-    goal: "Create src/core/openspec/types.ts with OpenSpecValidationReport, OpenSpecChange, OpenSpecInstruction types and zod schemas for defensive parsing"
-    deps: ["osc-1.1"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: []
-
-  - id: "osc-1.3"
-    title: "Create barrel export index"
-    goal: "Create src/core/openspec/index.ts exporting bridge class, types, and singleton"
-    deps: ["osc-1.1", "osc-1.2"]
-    validators: ["typecheck"]
-    sprint:
-      size: XS
-      intent: "feature"
-    files_contract:
-      allowed: ["src/core/openspec/index.ts"]
-      forbidden: []
-
-  # 2. Init Bridge
-  - id: "osc-2.1"
-    title: "Add initScaffold() to bridge"
-    goal: "Add initScaffold() method: call openspec init with --tools; map ralphy-sdd tool ids to openspec tool names; return { bridged: false } when unavailable"
-    deps: ["osc-1.3"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: []
-
-  - id: "osc-2.2"
-    title: "Modify installer.ts to use bridge with fallback"
-    goal: "In ensureOpenSpecScaffold(): check bridge.isAvailable(), delegate to bridge or fallback to built-in logic"
-    deps: ["osc-2.1"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/utils/installer.ts", "src/core/openspec/**"]
+      allowed: ["src/cli/plan.ts", "src/index.ts"]
       forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "ralphy-sdd plan 'hello' accepts input as prompt string"
+        type: "behavior"
+      - id: "acc-2"
+        text: "ralphy-sdd plan prd.md reads file contents as planning input"
+        type: "behavior"
+      - id: "acc-3"
+        text: "All flags are registered and parsed without errors"
+        type: "behavior"
 
-  # 3. Validate Bridge
-  - id: "osc-3.1"
-    title: "Add validate() to bridge"
-    goal: "Add validate() method: call openspec validate --all --json; map ValidationReport to ralphy-sdd ValidationIssue format"
-    deps: ["osc-1.3"]
-    validators: ["typecheck"]
+  # 2. Reference Resolution + Context Pack
+  - id: "plan-2.1"
+    title: "Implement --ref resolution with glob expansion"
+    goal: |
+      Create src/cli/plan/refs.ts (or inline in plan.ts): resolve --ref patterns relative to repo root
+      using fast-glob. Deduplicate paths, stable-sort lexicographically. Hard cap total ref files (20)
+      and bytes (512KB). Glob matching zero files → error (exit code 4).
+    deps: ["plan-1.1"]
+    validators: ["typecheck", "test"]
     sprint:
       size: S
       intent: "feature"
@@ -195,126 +151,24 @@ tasks:
       warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
       hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
     files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: []
-
-  - id: "osc-3.2"
-    title: "Modify validator.ts to use bridge with fallback"
-    goal: "In validateProject(): merge CLI validation results with existing directory checks when bridge available"
-    deps: ["osc-3.1"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/utils/validator.ts", "src/core/openspec/**"]
+      allowed: ["src/cli/plan.ts", "src/cli/plan/**"]
       forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "--ref docs/*.md expands and includes all matched files"
+        type: "behavior"
+      - id: "acc-2"
+        text: "Missing ref glob → exit code 4 with clear error"
+        type: "behavior"
 
-  # 4. Archive Bridge
-  - id: "osc-4.1"
-    title: "Create archive bridge"
-    goal: "Create src/core/openspec/archive.ts: wrap openspec archive --yes; support --skip-specs; return manual instructions when unavailable"
-    deps: ["osc-1.3"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: []
-
-  # 5. Change & Instructions Bridge
-  - id: "osc-5.1"
-    title: "Create change and instructions bridge"
-    goal: "Create src/core/openspec/change.ts: wrap openspec new change and openspec instructions --json"
-    deps: ["osc-1.3"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: []
-
-  # 6. Query Bridge
-  - id: "osc-6.1"
-    title: "Create query bridge"
-    goal: "Create src/core/openspec/query.ts: wrap openspec list --json and openspec status --json"
-    deps: ["osc-1.3"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/core/openspec/**"]
-      forbidden: []
-
-  # 7. CLI Integration
-  - id: "osc-7.1"
-    title: "Update init CLI for openspec bridge"
-    goal: "Add --no-openspec flag to src/cli/init.ts; pass --tools and --force through to bridge"
-    deps: ["osc-2.2"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/cli/init.ts"]
-      forbidden: ["src/core/engine/**"]
-
-  - id: "osc-7.2"
-    title: "Update validate CLI for enriched output"
-    goal: "Add --no-openspec flag to src/cli/validate.ts; show 'OpenSpec CLI validation' section when bridge is used"
-    deps: ["osc-3.2"]
-    validators: ["typecheck"]
-    sprint:
-      size: S
-      intent: "feature"
-    budget:
-      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
-      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
-      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
-    files_contract:
-      allowed: ["src/cli/validate.ts"]
-      forbidden: ["src/core/engine/**"]
-
-  # 8. Config
-  - id: "osc-8.1"
-    title: "Create openspec config.yaml"
-    goal: "Create openspec/config.yaml with schema: spec-driven and context: openspec/project.md"
-    validators: ["typecheck"]
-    sprint:
-      size: XS
-      intent: "infra"
-    files_contract:
-      allowed: ["openspec/config.yaml"]
-      forbidden: []
-
-  # 9. Tests
-  - id: "osc-9.1"
-    title: "Add unit tests for OpenSpecBridge"
-    goal: "Create src/core/openspec/bridge.test.ts: mock execa for available/unavailable/timeout/JSON parse error; test version parsing"
-    deps: ["osc-1.1"]
+  - id: "plan-2.2"
+    title: "Build Planning Context Pack"
+    goal: |
+      Create src/core/planning/context-pack.ts: build a deterministic, bounded text context pack
+      including user input, ref contents, openspec/project.md, existing specs summaries, and strict
+      PLAN MODE constraints. Prefer installed planning templates (Codex/Claude/OpenCode), with
+      built-in fallback. Context must be deterministic for same inputs.
+    deps: ["plan-2.1"]
     validators: ["typecheck", "test"]
     sprint:
       size: M
@@ -324,8 +178,220 @@ tasks:
       warning: { usd: 2.0, tokens: 150000, time_minutes: 15 }
       hard: { usd: 3.0, tokens: 250000, time_minutes: 20, max_iterations: 8 }
     files_contract:
-      allowed: ["src/core/openspec/**"]
+      allowed: ["src/core/planning/**", "src/cli/plan.ts"]
       forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "Context pack includes user input, refs, project.md, and PLAN MODE constraints"
+        type: "behavior"
+      - id: "acc-2"
+        text: "Same inputs produce identical context pack text"
+        type: "behavior"
+
+  # 3. Change ID Derivation
+  - id: "plan-3.1"
+    title: "Derive changeId when --change is not provided"
+    goal: |
+      Create src/core/planning/change-id.ts: derive kebab-case slug from input text (max 50 chars).
+      Add short suffix if collision with existing non-empty change folder. Must be stable for identical
+      inputs. Export deriveChangeId(input, existingChanges) → string.
+    deps: ["plan-1.1"]
+    validators: ["typecheck", "test"]
+    sprint:
+      size: S
+      intent: "feature"
+    budget:
+      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
+      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
+      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
+    files_contract:
+      allowed: ["src/core/planning/**"]
+      forbidden: ["src/core/engine/**", "src/cli/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "Derived changeId is stable for identical inputs"
+        type: "behavior"
+      - id: "acc-2"
+        text: "Collision with existing folder → different id with suffix"
+        type: "behavior"
+
+  # 4. Backend Invocation
+  - id: "plan-4.1"
+    title: "Invoke backend for planning"
+    goal: |
+      In src/cli/plan.ts: reuse existing backend adapter selection logic (same as run).
+      Build planning prompt from context pack + PLAN MODE constraint. Invoke backend once.
+      Enforce scope guard: detect and fail if non-OpenSpec paths are modified (policy: block).
+    deps: ["plan-2.2", "plan-3.1"]
+    validators: ["typecheck"]
+    sprint:
+      size: M
+      intent: "feature"
+    budget:
+      optimal: { usd: 1.2, tokens: 80000, time_minutes: 10 }
+      warning: { usd: 2.0, tokens: 150000, time_minutes: 15 }
+      hard: { usd: 3.0, tokens: 250000, time_minutes: 20, max_iterations: 8 }
+    files_contract:
+      allowed: ["src/cli/plan.ts", "src/core/planning/**"]
+      forbidden: ["src/core/engine/loop.ts"]
+    acceptance:
+      - id: "acc-1"
+        text: "Backend receives PLAN MODE instruction payload"
+        type: "behavior"
+      - id: "acc-2"
+        text: "--backend noop runs without external tool dependency"
+        type: "behavior"
+
+  # 5. File Outputs + Structural Enforcement
+  - id: "plan-5.1"
+    title: "Write OpenSpec change folder and update project files"
+    goal: |
+      After backend completes: verify and write expected outputs:
+      openspec/changes/<changeId>/proposal.md, tasks.md, specs/** (at least one).
+      Update openspec/project.yml with planned tasks. Create openspec/project.md if missing.
+      Task ID collision → fail deterministically (exit code 4).
+    deps: ["plan-4.1"]
+    validators: ["typecheck"]
+    sprint:
+      size: M
+      intent: "feature"
+    budget:
+      optimal: { usd: 1.2, tokens: 80000, time_minutes: 10 }
+      warning: { usd: 2.0, tokens: 150000, time_minutes: 15 }
+      hard: { usd: 3.0, tokens: 250000, time_minutes: 20, max_iterations: 8 }
+    files_contract:
+      allowed: ["src/cli/plan.ts", "src/core/planning/**"]
+      forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "Change folder created with proposal.md, tasks.md, and at least one spec delta"
+        type: "behavior"
+      - id: "acc-2"
+        text: "SpecLoader.loadProjectSpec() succeeds after plan writes"
+        type: "behavior"
+
+  - id: "plan-5.2"
+    title: "Enforce plan output quality gates"
+    goal: |
+      Create src/core/planning/quality-gates.ts: validate planned tasks have sprint.size,
+      sprint.intent, validators (referencing declared), files_contract.allowed (non-empty),
+      and acceptance (non-empty). Fail with exit code 4 and report which tasks violate.
+    deps: ["plan-5.1"]
+    validators: ["typecheck", "test"]
+    sprint:
+      size: S
+      intent: "feature"
+    budget:
+      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
+      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
+      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
+    files_contract:
+      allowed: ["src/core/planning/**"]
+      forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "Tasks missing sprint.size → deterministic failure with exit code 4"
+        type: "behavior"
+      - id: "acc-2"
+        text: "Validator references checked against declared validators"
+        type: "behavior"
+
+  # 6. Post-Plan Validation + Artifacts
+  - id: "plan-6.1"
+    title: "Run schema-level post-plan validation"
+    goal: |
+      After plan writes: run SpecLoader.loadProjectSpec() + buildTaskDAG() + scaffold checks.
+      Invalid YAML or schema → exit non-zero with error report.
+    deps: ["plan-5.2"]
+    validators: ["typecheck"]
+    sprint:
+      size: S
+      intent: "feature"
+    budget:
+      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
+      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
+      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
+    files_contract:
+      allowed: ["src/cli/plan.ts", "src/core/planning/**"]
+      forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "Invalid YAML causes non-zero exit with error report"
+        type: "behavior"
+
+  - id: "plan-6.2"
+    title: "Write PLAN completion artifacts"
+    goal: |
+      Write ralphy-sdd/STATUS.md with phase "PLAN completed", change id, output file pointers.
+      Write ralphy-sdd/runs/<runId>.md with input summary, refs, change id, validation results.
+      Reuse existing artifact writers (writeStatus, writeRunLogOnce).
+    deps: ["plan-6.1"]
+    validators: ["typecheck"]
+    sprint:
+      size: S
+      intent: "feature"
+    budget:
+      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
+      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
+      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
+    files_contract:
+      allowed: ["src/cli/plan.ts", "src/core/planning/**"]
+      forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "STATUS.md shows phase PLAN and PLAN completed message"
+        type: "behavior"
+      - id: "acc-2"
+        text: "Run log exists for the plan runId"
+        type: "behavior"
+
+  # 7. JSON Output + Exit Codes
+  - id: "plan-7.1"
+    title: "Implement --json output contract"
+    goal: |
+      When --json is passed: success → { ok, changeId, runId, writtenFiles, validation, warnings }.
+      Failure → { ok: false, exitCode, error }. Exit codes: 0=success, 4=invalid, 5=backend error, 6=IO error.
+    deps: ["plan-6.2"]
+    validators: ["typecheck", "test"]
+    sprint:
+      size: S
+      intent: "feature"
+    budget:
+      optimal: { usd: 0.5, tokens: 40000, time_minutes: 5 }
+      warning: { usd: 0.8, tokens: 65000, time_minutes: 8 }
+      hard: { usd: 1.2, tokens: 100000, time_minutes: 12, max_iterations: 5 }
+    files_contract:
+      allowed: ["src/cli/plan.ts", "src/core/planning/**"]
+      forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "--json outputs valid JSON with required fields on success"
+        type: "behavior"
+      - id: "acc-2"
+        text: "--json outputs valid JSON with error info on failure"
+        type: "behavior"
+
+  # 8. Release Hygiene
+  - id: "plan-8.1"
+    title: "Update CLI docs and bump version to v0.4.0"
+    goal: |
+      Update package.json version to 0.4.0, update src/index.ts version string,
+      ensure ralphy-sdd --help lists plan command. Update README if needed.
+    deps: ["plan-7.1"]
+    validators: ["typecheck", "test"]
+    sprint:
+      size: XS
+      intent: "infra"
+    files_contract:
+      allowed: ["package.json", "src/index.ts", "README.md", "CHANGELOG.md"]
+      forbidden: ["src/core/engine/**"]
+    acceptance:
+      - id: "acc-1"
+        text: "ralphy-sdd --help lists plan command"
+        type: "behavior"
+      - id: "acc-2"
+        text: "npm run typecheck && npm test pass"
+        type: "evidence"
 
 # ============================================================
 # TASK EXAMPLES (uncomment and modify as needed)

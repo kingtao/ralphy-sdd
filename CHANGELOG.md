@@ -10,6 +10,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Forked from [wenqingyu/ralphy-openspec](https://github.com/wenqingyu/ralphy-openspec) with the following changes:
 
 ### Added
+- **`ralphy-sdd plan` command** (`src/cli/plan.ts`): New CLI command for generating OpenSpec change proposals and task plans from a prompt or PRD file.
+  - Supports inline prompt text (`plan "..."`) or file path input (`plan prd.md`).
+  - `--ref <fileOrGlob>` (repeatable): include reference files in planning context with glob expansion, deduplication, and stable sorting.
+  - `--change <slug>`: explicit change id; auto-derived from input text when omitted (kebab-case, max 50 chars, collision-safe).
+  - `--backend <codex|opencode|claude-code|noop>`: reuses existing backend adapter layer.
+  - `--artifact-dir <dir>`: override artifact output directory.
+  - `--json`: machine-readable JSON output with deterministic exit codes (0/4/5/6).
+  - Post-plan validation: `SpecLoader.loadProjectSpec()` + scaffold checks.
+  - PLAN MODE scope guard: blocks non-OpenSpec file writes.
+  - Artifacts: `ralphy-sdd/STATUS.md` + `ralphy-sdd/runs/<runId>.md`.
+- **Planning core modules** (`src/core/planning/`):
+  - `refs.ts` — `--ref` glob resolution with bounded context (max 20 files / 512KB).
+  - `change-id.ts` — deterministic changeId derivation with collision avoidance.
+  - `context-pack.ts` — deterministic planning context pack builder with 7 sections (template, constraints, user input, change id, project context, existing specs, reference files).
+  - `index.ts` — full planning pipeline orchestrator (7 stages).
+- **33 new unit tests**: refs (10), change-id (11), context-pack (12).
 - **OpenSpec 1.x CLI bridge**: New bridge layer (`src/core/openspec/`) with CLI detection, version check, exec wrapper, and 21 unit tests.
 - **Codex backend**: New `src/core/backends/codex.ts` using `codex exec --full-auto` for non-interactive, sandboxed execution.
 - **Codex documentation page**: New `docs/src/pages/[lang]/docs/codex.astro` with setup guide, terminal workflow, and tips.
@@ -26,6 +42,8 @@ Forked from [wenqingyu/ralphy-openspec](https://github.com/wenqingyu/ralphy-open
 - **ToolTabs component**: Replaced Cursor tab with Codex tab (default active); now shows Codex / Claude Code / OpenCode.
 - **CLI description**: Updated to reflect supported tools (Codex, OpenCode, Claude Code).
 - **Removed `CURSOR_API_KEY`** references from README.
+- **OpenSpec archive path consistency**: All references aligned to `openspec/changes/archive/` (matching OpenSpec CLI v1.2.0 convention).
+- **`ralphy-sdd/` directory**: Added to `.gitignore` (runtime artifacts, not source).
 
 ### Removed
 - `src/core/backends/cursor.ts` — Cursor backend adapter.

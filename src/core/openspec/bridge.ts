@@ -255,7 +255,7 @@ export class OpenSpecBridge {
                 bridged: false,
                 reason: "OpenSpec CLI not available. Manual archive steps:\n" +
                     `1. Apply delta specs from openspec/changes/${changeName}/specs/ to openspec/specs/\n` +
-                    `2. Move openspec/changes/${changeName}/ to openspec/archive/${changeName}/`,
+                    `2. Move openspec/changes/${changeName}/ to openspec/changes/archive/${changeName}/`,
             };
         }
 

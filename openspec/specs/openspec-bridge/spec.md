@@ -68,7 +68,7 @@ The bridge SHALL wrap `openspec archive <change-name> --yes` to perform validate
 #### Scenario: Archive with CLI available
 - **WHEN** `archiveChange("my-change")` is called and openspec CLI is detected
 - **THEN** `openspec archive my-change --yes` is invoked
-- **AND** delta specs are applied to `openspec/specs/` and the change is moved to `openspec/archive/`
+- **AND** delta specs are applied to `openspec/specs/` and the change is moved to `openspec/changes/archive/`
 
 #### Scenario: Archive fallback without CLI
 - **WHEN** `archiveChange("my-change")` is called and openspec CLI is NOT detected

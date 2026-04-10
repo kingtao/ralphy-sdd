@@ -37,7 +37,7 @@ When asked to validate:
 ### 4) Archive
 When asked to archive:
 - Prefer `openspec archive <change-name> --yes` if OpenSpec CLI is available.
-- Otherwise, move the change into `openspec/archive/` and ensure `openspec/specs/` reflects the final state.
+- Otherwise, move the change into `openspec/changes/archive/` and ensure `openspec/specs/` reflects the final state.
 
 ## Ralph loop completion promise
 If you are being run in a loop, only output this exact text when ALL tasks are complete and tests are green:
