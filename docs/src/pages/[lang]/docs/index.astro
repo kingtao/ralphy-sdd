@@ -7,6 +7,7 @@ export function getStaticPaths() {
   return Object.keys(ui).map(lang => ({ params: { lang } }));
 }
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -18,30 +19,30 @@ const t = useTranslations(lang);
       
       <section class="docs-section">
         <h2>{t('docs.installation')}</h2>
-        <p>Install Ralphy-Spec globally via npm:</p>
-        <pre><code>npm install -g ralphy-spec</code></pre>
+        <p>Install Ralphy-SDD globally via npm:</p>
+        <pre><code>npm install -g ralphy-sdd</code></pre>
         
         <p>Or use npx without installing:</p>
-        <pre><code>npx ralphy-spec init</code></pre>
+        <pre><code>npx ralphy-sdd init</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>Initialize in Your Project</h2>
         <pre><code>cd your-project
-ralphy-spec init</code></pre>
+ralphy-sdd init</code></pre>
         
         <p>This will:</p>
         <ul>
           <li>Create the <code>openspec/</code> directory structure</li>
           <li>Install tool-specific templates based on your selection</li>
-          <li>Create the local artifact folder <code>ralphy-spec/</code> (STATUS/TASKS/BUDGET + state)</li>
+          <li>Create the local artifact folder <code>ralphy-sdd/</code> (STATUS/TASKS/BUDGET + state)</li>
         </ul>
       </section>
 
       <section class="docs-section">
         <h2>CLI Commands</h2>
         <p>See the full command reference (including <code>run</code>, <code>status</code>, <code>budget</code>, and flags like <code>--artifact-dir</code>):</p>
-        <p><a href={`/${lang}/docs/cli`}>Full CLI reference →</a></p>
+        <p><a href={`${BASE}/${lang}/docs/cli`}>Full CLI reference →</a></p>
       </section>
 
       <section class="docs-section">
@@ -76,15 +77,15 @@ ralphy-spec init</code></pre>
       <section class="docs-section">
         <h2>{t('docs.platformGuides')}</h2>
         <div class="platform-links">
-          <a href={`/${lang}/docs/cursor`} class="platform-link-card">
+          <a href={`${BASE}/${lang}/docs/cursor`} class="platform-link-card">
             <span class="icon">⚡</span>
             <span>Cursor</span>
           </a>
-          <a href={`/${lang}/docs/opencode`} class="platform-link-card">
+          <a href={`${BASE}/${lang}/docs/opencode`} class="platform-link-card">
             <span class="icon">🔧</span>
             <span>OpenCode</span>
           </a>
-          <a href={`/${lang}/docs/claude`} class="platform-link-card">
+          <a href={`${BASE}/${lang}/docs/claude`} class="platform-link-card">
             <span class="icon">🤖</span>
             <span>Claude Code</span>
           </a>

@@ -7,6 +7,7 @@ export function getStaticPaths() {
   return Object.keys(ui).map(lang => ({ params: { lang } }));
 }
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -15,24 +16,24 @@ const t = useTranslations(lang);
   <div class="docs-page">
     <div class="container">
       <nav class="breadcrumb">
-        <a href={`/${lang}/docs/`}>{t('docs.title')}</a> / <span>OpenCode</span>
+        <a href={`${BASE}/${lang}/docs/`}>{t('docs.title')}</a> / <span>OpenCode</span>
       </nav>
 
       <h1>🔧 OpenCode Setup Guide</h1>
       
       <section class="docs-section">
         <h2>Installation</h2>
-        <p>Initialize Ralphy-Spec with OpenCode support:</p>
+        <p>Initialize Ralphy-SDD with OpenCode support:</p>
         <pre><code>cd your-project
-ralphy-spec init --tools opencode</code></pre>
+ralphy-sdd init --tools opencode</code></pre>
         
         <p>Or select OpenCode during interactive setup:</p>
-        <pre><code>ralphy-spec init</code></pre>
+        <pre><code>ralphy-sdd init</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>What Gets Installed</h2>
-        <p>Ralphy-Spec creates an <code>AGENTS.md</code> file at the project root:</p>
+        <p>Ralphy-SDD creates an <code>AGENTS.md</code> file at the project root:</p>
         <pre><code>your-project/
 ├── AGENTS.md          # Agent instructions
 ├── openspec/
@@ -48,7 +49,7 @@ ralphy-spec init --tools opencode</code></pre>
 
       <section class="docs-section">
         <h2>Using with Ralph Loop</h2>
-        <p>Ralphy-Spec is designed to work with Ralph loop runners like <a href="https://github.com/Th0rgal/opencode-ralph-wiggum" target="_blank" rel="noopener">opencode-ralph-wiggum</a>:</p>
+        <p>Ralphy-SDD is designed to work with Ralph loop runners like <a href="https://github.com/Th0rgal/opencode-ralph-wiggum" target="_blank" rel="noopener">opencode-ralph-wiggum</a>:</p>
         
         <pre><code># Install ralph-wiggum
 npm install -g @th0rgal/ralph-wiggum
@@ -96,8 +97,8 @@ ralph "Follow AGENTS.md to implement the add-auth change. \
       </section>
 
       <div class="nav-links">
-        <a href={`/${lang}/docs/cursor`}>← Cursor Guide</a>
-        <a href={`/${lang}/docs/claude`}>Claude Code Guide →</a>
+        <a href={`${BASE}/${lang}/docs/cursor`}>← Cursor Guide</a>
+        <a href={`${BASE}/${lang}/docs/claude`}>Claude Code Guide →</a>
       </div>
     </div>
   </div>

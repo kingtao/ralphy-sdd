@@ -7,6 +7,7 @@ export function getStaticPaths() {
   return Object.keys(ui).map((lang) => ({ params: { lang } }));
 }
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -15,43 +16,43 @@ const t = useTranslations(lang);
   <div class="docs-page">
     <div class="container">
       <h1>CLI</h1>
-      <p class="muted">Full command reference for <code>ralphy-spec</code>.</p>
+      <p class="muted">Full command reference for <code>ralphy-sdd</code>.</p>
 
       <section class="docs-section">
         <h2>Quick start</h2>
-        <pre><code>npx ralphy-spec init
-ralphy-spec run --dry-run
-ralphy-spec run
-ralphy-spec status
-ralphy-spec budget --json</code></pre>
+        <pre><code>npx ralphy-sdd init
+ralphy-sdd run --dry-run
+ralphy-sdd run
+ralphy-sdd status
+ralphy-sdd budget --json</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>Commands</h2>
-        <pre><code>ralphy-spec init [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;] [--force]
-ralphy-spec update [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;] [--force]
+        <pre><code>ralphy-sdd init [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;] [--force]
+ralphy-sdd update [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;] [--force]
 
-ralphy-spec validate [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;]
-ralphy-spec validate --task &lt;taskId&gt; [--dir &lt;path&gt;]
+ralphy-sdd validate [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;]
+ralphy-sdd validate --task &lt;taskId&gt; [--dir &lt;path&gt;]
 
-ralphy-spec run [--backend &lt;cursor|opencode|claude-code|noop&gt;] [--workspace &lt;worktree|patch&gt;]
+ralphy-sdd run [--backend &lt;cursor|opencode|claude-code|noop&gt;] [--workspace &lt;worktree|patch&gt;]
               [--artifact-dir &lt;dir&gt;] [--task &lt;taskId&gt;] [--no-stream-backend] [--dry-run] [--json]
 
-ralphy-spec status [--json]
-ralphy-spec budget [--json]
-ralphy-spec report [--out &lt;filepath&gt;] [--json]
-ralphy-spec tail [--interval-ms &lt;n&gt;]
+ralphy-sdd status [--json]
+ralphy-sdd budget [--json]
+ralphy-sdd report [--out &lt;filepath&gt;] [--json]
+ralphy-sdd tail [--interval-ms &lt;n&gt;]
 
-ralphy-spec checkpoint --task &lt;taskId&gt; --message &lt;message&gt;</code></pre>
+ralphy-sdd checkpoint --task &lt;taskId&gt; --message &lt;message&gt;</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>Essential user journey</h2>
         <ol>
-          <li><strong>Initialize</strong>: <code>ralphy-spec init</code></li>
+          <li><strong>Initialize</strong>: <code>ralphy-sdd init</code></li>
           <li><strong>Describe work</strong> in <code>openspec/project.yml</code> (tasks, validators, budgets, sprint)</li>
-          <li><strong>Dry-run</strong>: <code>ralphy-spec run --dry-run</code> (safe)</li>
-          <li><strong>Run</strong>: <code>ralphy-spec run</code></li>
+          <li><strong>Dry-run</strong>: <code>ralphy-sdd run --dry-run</code> (safe)</li>
+          <li><strong>Run</strong>: <code>ralphy-sdd run</code></li>
           <li><strong>Observe</strong>: <code>status</code>/<code>tail</code>/<code>budget</code>/<code>report</code></li>
         </ol>
       </section>
@@ -59,24 +60,24 @@ ralphy-spec checkpoint --task &lt;taskId&gt; --message &lt;message&gt;</code></p
       <section class="docs-section">
         <h2>Backend notes</h2>
         <ul>
-          <li><strong>Cursor</strong>: <code>--backend cursor</code> uses Cursor Agent. Run <code>cursor agent login</code> (or set <code>CURSOR_API_KEY</code>) before running <code>ralphy-spec run</code>.</li>
+          <li><strong>Cursor</strong>: <code>--backend cursor</code> uses Cursor Agent. Run <code>cursor agent login</code> (or set <code>CURSOR_API_KEY</code>) before running <code>ralphy-sdd run</code>.</li>
         </ul>
       </section>
 
       <section class="docs-section">
         <h2>Logs & artifacts</h2>
         <ul>
-          <li><code>ralphy-spec/STATUS.md</code>: live status snapshot (updates during a run)</li>
-          <li><code>ralphy-spec/runs/&lt;runId&gt;.md</code>: immutable run log after completion</li>
-          <li><code>ralphy-spec/logs/&lt;runId&gt;/...</code>: backend transcripts (stdout/stderr + metadata)</li>
+          <li><code>ralphy-sdd/STATUS.md</code>: live status snapshot (updates during a run)</li>
+          <li><code>ralphy-sdd/runs/&lt;runId&gt;.md</code>: immutable run log after completion</li>
+          <li><code>ralphy-sdd/logs/&lt;runId&gt;/...</code>: backend transcripts (stdout/stderr + metadata)</li>
         </ul>
       </section>
 
       <section class="docs-section">
         <h2>Useful links</h2>
         <ul>
-          <li><a href={`/${lang}/changelog`}>{t('nav.changelog')}</a></li>
-          <li><a href={`/${lang}/docs/`}>{t('nav.docs')}</a></li>
+          <li><a href={`${BASE}/${lang}/changelog`}>{t('nav.changelog')}</a></li>
+          <li><a href={`${BASE}/${lang}/docs/`}>{t('nav.docs')}</a></li>
         </ul>
       </section>
     </div>

@@ -2,6 +2,7 @@
 import { languages } from '../i18n/ui';
 import { getLangFromUrl, getPathWithoutLang } from '../i18n/utils';
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const pathWithoutLang = getPathWithoutLang(Astro.url.pathname);
 
@@ -23,7 +24,7 @@ const langLabels: Record<string, string> = {
   <div class="language-dropdown">
     {Object.entries(languages).map(([code, name]) => (
       <a 
-        href={`/${code}${pathWithoutLang}`} 
+        href={`${BASE}/${code}${pathWithoutLang}`} 
         data-lang={code}
         class:list={['language-option', { active: code === lang }]}
       >

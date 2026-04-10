@@ -7,6 +7,7 @@ export function getStaticPaths() {
   return Object.keys(ui).map(lang => ({ params: { lang } }));
 }
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -15,24 +16,24 @@ const t = useTranslations(lang);
   <div class="docs-page">
     <div class="container">
       <nav class="breadcrumb">
-        <a href={`/${lang}/docs/`}>{t('docs.title')}</a> / <span>Cursor</span>
+        <a href={`${BASE}/${lang}/docs/`}>{t('docs.title')}</a> / <span>Cursor</span>
       </nav>
 
       <h1>⚡ Cursor Setup Guide</h1>
       
       <section class="docs-section">
         <h2>Installation</h2>
-        <p>Initialize Ralphy-Spec with Cursor support:</p>
+        <p>Initialize Ralphy-SDD with Cursor support:</p>
         <pre><code>cd your-project
-ralphy-spec init --tools cursor</code></pre>
+ralphy-sdd init --tools cursor</code></pre>
         
         <p>Or select Cursor during interactive setup:</p>
-        <pre><code>ralphy-spec init</code></pre>
+        <pre><code>ralphy-sdd init</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>What Gets Installed</h2>
-        <p>Ralphy-Spec creates the following files for Cursor:</p>
+        <p>Ralphy-SDD creates the following files for Cursor:</p>
         <pre><code>.cursor/
 └── prompts/
     ├── ralphy-plan.md
@@ -72,12 +73,12 @@ ralphy-spec init --tools cursor</code></pre>
 
       <section class="docs-section">
         <h2>Terminal workflow (Cursor as backend)</h2>
-        <p>If you want to run <code>ralphy-spec</code> fully from a terminal and use Cursor for execution (<code>--backend cursor</code>), you must authenticate Cursor Agent first:</p>
+        <p>If you want to run <code>ralphy-sdd</code> fully from a terminal and use Cursor for execution (<code>--backend cursor</code>), you must authenticate Cursor Agent first:</p>
         <pre><code>cursor agent login
 cursor agent status</code></pre>
         <p>Then run the CLI:</p>
-        <pre><code>ralphy-spec run --dry-run
-ralphy-spec run --backend cursor</code></pre>
+        <pre><code>ralphy-sdd run --dry-run
+ralphy-sdd run --backend cursor</code></pre>
         <p class="muted">Backend output is streamed by default. Use <code>--no-stream-backend</code> to disable streaming.</p>
         <p class="muted">Tip: for CI or non-interactive environments, set <code>CURSOR_API_KEY</code> instead of using <code>cursor agent login</code>.</p>
       </section>
@@ -85,15 +86,15 @@ ralphy-spec run --backend cursor</code></pre>
       <section class="docs-section">
         <h2>Tips for Cursor</h2>
         <ul>
-          <li>Restart Cursor after running <code>ralphy-spec init</code> to load the new slash commands</li>
+          <li>Restart Cursor after running <code>ralphy-sdd init</code> to load the new slash commands</li>
           <li>Use <code>@openspec/</code> to reference spec files in your prompts</li>
           <li>The commands work best in Agent mode for multi-step tasks</li>
         </ul>
       </section>
 
       <div class="nav-links">
-        <a href={`/${lang}/docs/`}>← Back to Documentation</a>
-        <a href={`/${lang}/docs/opencode`}>OpenCode Guide →</a>
+        <a href={`${BASE}/${lang}/docs/`}>← Back to Documentation</a>
+        <a href={`${BASE}/${lang}/docs/opencode`}>OpenCode Guide →</a>
       </div>
     </div>
   </div>

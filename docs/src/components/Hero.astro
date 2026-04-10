@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -8,7 +9,7 @@ const t = useTranslations(lang);
 <section class="hero">
   <div class="container">
     <div class="hero-badge">{t('hero.badge')}</div>
-    <h1 class="hero-title">ralphy-spec</h1>
+    <h1 class="hero-title">ralphy-sdd</h1>
     <p class="hero-subtitle" set:html={t('hero.subtitle')}></p>
     
     <div class="hero-features">
@@ -29,7 +30,7 @@ const t = useTranslations(lang);
       <div class="feature-item combined">
         <span class="feature-icon">⚡</span>
         <div class="feature-text">
-          <span class="feature-name">Ralphy-Spec</span>
+          <span class="feature-name">Ralphy-SDD</span>
           <span class="feature-desc">{t('hero.combinedAdvantage')}</span>
         </div>
       </div>
@@ -37,7 +38,7 @@ const t = useTranslations(lang);
     
     <div class="hero-actions">
       <a href="#setup" class="btn btn-primary">{t('hero.cta')}</a>
-      <a href="https://github.com/wenqingyu/ralphy-openspec" target="_blank" rel="noopener" class="btn btn-secondary">
+      <a href="https://github.com/kingtao/ralphy-sdd" target="_blank" rel="noopener" class="btn btn-secondary">
         {t('hero.viewSource')}
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8"/>
@@ -46,9 +47,9 @@ const t = useTranslations(lang);
     </div>
 
     <div class="hero-links">
-      <a href={`/${lang}/changelog`}>{t('nav.changelog')}</a>
+      <a href={`${BASE}/${lang}/changelog`}>{t('nav.changelog')}</a>
       <span class="sep">·</span>
-      <a href={`/${lang}/docs/cli`}>{t('nav.cli')}</a>
+      <a href={`${BASE}/${lang}/docs/cli`}>{t('nav.cli')}</a>
     </div>
   </div>
 </section>

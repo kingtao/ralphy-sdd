@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -17,8 +18,8 @@ const t = useTranslations(lang);
         <span class="install-hint">{t('setup.step1Hint')}</span>
       </div>
       <div class="install-command">
-        <code>npx ralphy-spec init</code>
-        <button class="copy-btn" data-copy="npx ralphy-spec init" title="Copy">
+        <code>npx ralphy-sdd init</code>
+        <button class="copy-btn" data-copy="npx ralphy-sdd init" title="Copy">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -75,7 +76,7 @@ openspec/
 ├── changes/
 └── project.md
 
-ralphy-spec/
+ralphy-sdd/
 ├── STATUS.md
 ├── TASKS.md
 └── BUDGET.md</code></pre>
@@ -131,7 +132,7 @@ openspec/
 ├── changes/
 └── project.md
 
-ralphy-spec/
+ralphy-sdd/
 ├── STATUS.md
 ├── TASKS.md
 └── BUDGET.md</code></pre>
@@ -176,7 +177,7 @@ openspec/
 ├── changes/
 └── project.md
 
-ralphy-spec/
+ralphy-sdd/
 ├── state.db
 ├── STATUS.md
 ├── TASKS.md
@@ -197,8 +198,8 @@ ralph "Follow AGENTS.md to implement add-api. \
     </div>
 
     <div class="next-links">
-      <a class="mini-link" href={`/${lang}/docs/cli`}>→ {t('nav.cli')}</a>
-      <a class="mini-link" href={`/${lang}/changelog`}>→ {t('nav.changelog')}</a>
+      <a class="mini-link" href={`${BASE}/${lang}/docs/cli`}>→ {t('nav.cli')}</a>
+      <a class="mini-link" href={`${BASE}/${lang}/changelog`}>→ {t('nav.changelog')}</a>
     </div>
   </div>
 </section>

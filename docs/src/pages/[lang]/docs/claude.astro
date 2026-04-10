@@ -7,6 +7,7 @@ export function getStaticPaths() {
   return Object.keys(ui).map(lang => ({ params: { lang } }));
 }
 
+const BASE = '/ralphy-sdd';
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
@@ -15,24 +16,24 @@ const t = useTranslations(lang);
   <div class="docs-page">
     <div class="container">
       <nav class="breadcrumb">
-        <a href={`/${lang}/docs/`}>{t('docs.title')}</a> / <span>Claude Code</span>
+        <a href={`${BASE}/${lang}/docs/`}>{t('docs.title')}</a> / <span>Claude Code</span>
       </nav>
 
       <h1>🤖 Claude Code Setup Guide</h1>
       
       <section class="docs-section">
         <h2>Installation</h2>
-        <p>Initialize Ralphy-Spec with Claude Code support:</p>
+        <p>Initialize Ralphy-SDD with Claude Code support:</p>
         <pre><code>cd your-project
-ralphy-spec init --tools claude-code</code></pre>
+ralphy-sdd init --tools claude-code</code></pre>
         
         <p>Or select Claude Code during interactive setup:</p>
-        <pre><code>ralphy-spec init</code></pre>
+        <pre><code>ralphy-sdd init</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>What Gets Installed</h2>
-        <p>Ralphy-Spec creates the following files for Claude Code:</p>
+        <p>Ralphy-SDD creates the following files for Claude Code:</p>
         <pre><code>.claude/
 └── commands/
     ├── ralphy-plan.md
@@ -96,8 +97,8 @@ ralphy-spec init --tools claude-code</code></pre>
       </section>
 
       <div class="nav-links">
-        <a href={`/${lang}/docs/opencode`}>← OpenCode Guide</a>
-        <a href={`/${lang}/docs/`}>Back to Documentation →</a>
+        <a href={`${BASE}/${lang}/docs/opencode`}>← OpenCode Guide</a>
+        <a href={`${BASE}/${lang}/docs/`}>Back to Documentation →</a>
       </div>
     </div>
   </div>
