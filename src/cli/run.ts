@@ -29,7 +29,7 @@ function createBackend(id: string) {
 export function registerRunCommand(program: Command): void {
   program
     .command("run")
-    .description("Execute the ralphy-spec engine loop")
+    .description("Execute the ralphy-sdd engine loop")
     .option("--backend <id>", "Backend id: cursor|opencode|claude-code|noop")
     .option("--workspace <mode>", "Workspace mode: worktree|patch")
     .option("--artifact-dir <dir>", "Override artifact root directory (enables artifacts)")

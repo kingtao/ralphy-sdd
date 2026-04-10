@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.0] - 2026-01-23
 
 ### Added
-- Initial public release of `ralphy-spec`.
+- Initial public release of `ralphy-sdd`.
 - Astro-powered documentation site with i18n (en/zh/ko/ja).
 
 ### Changed
@@ -22,12 +22,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Budget intelligence: three-tier budgets (optimal → warning → hard) with hard-cap blocking + failure summaries.
 - Sprint semantics: `sprint.size` defaults, `sprint.intent` constraints, and configurable scope guard policy (`off|warn|block`).
-- Artifact system: `ralphy-spec/` folder, STATUS/TASKS/BUDGET writers, per-task artifacts, immutable run logs, and `--artifact-dir`.
-- New CLI command: `ralphy-spec budget` and a full CLI docs page on the website.
+- Artifact system: `ralphy-sdd/` folder, STATUS/TASKS/BUDGET writers, per-task artifacts, immutable run logs, and `--artifact-dir`.
+- New CLI command: `ralphy-sdd budget` and a full CLI docs page on the website.
 - Test suite (Vitest) covering the above behaviors.
 
 ### Changed
-- `ralphy-spec run` now supports `worktree` mode and real backend selection (`cursor|opencode|claude-code|noop`).
+- `ralphy-sdd run` now supports `worktree` mode and real backend selection (`cursor|opencode|claude-code|noop`).
 - Docs + README (all languages) updated to reflect the new artifacts and CLI.
 
 ## [0.3.1] - 2026-01-23
@@ -38,17 +38,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.2] - 2026-01-23
 
 ### Changed
-- `ralphy-spec run` now streams backend output to the terminal by default. Use `--no-stream-backend` to disable (and `--json` remains non-streaming).
+- `ralphy-sdd run` now streams backend output to the terminal by default. Use `--no-stream-backend` to disable (and `--json` remains non-streaming).
 
 ## [0.3.3] - 2026-01-23
 
 ### Changed
-- `ralphy-spec run` now prints minimal progress updates to stderr (run started, task/iteration, validate), so runs never look “hung” even if the backend is quiet.
+- `ralphy-sdd run` now prints minimal progress updates to stderr (run started, task/iteration, validate), so runs never look “hung” even if the backend is quiet.
 
 ## [0.3.4] - 2026-01-23
 
 ### Added
-- Per-iteration backend transcripts under `ralphy-spec/logs/<runId>/...` (stdout/stderr + metadata), and a backend heartbeat message every 30s while a backend call is running.
+- Per-iteration backend transcripts under `ralphy-sdd/logs/<runId>/...` (stdout/stderr + metadata), and a backend heartbeat message every 30s while a backend call is running.
 
 ## [0.3.5] - 2026-01-23
 

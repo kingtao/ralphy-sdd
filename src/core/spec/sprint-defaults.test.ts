@@ -32,7 +32,7 @@ describe("mergeBudgetDefaults", () => {
 
 describe("SpecLoader sprint defaults", () => {
   it("applies sprint size defaults when budget is absent", async () => {
-    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ralphy-spec-"));
+    const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "ralphy-sdd-"));
     await fs.mkdir(path.join(tmp, "openspec"), { recursive: true });
     await fs.writeFile(
       path.join(tmp, "openspec", "project.yml"),

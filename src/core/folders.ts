@@ -3,7 +3,7 @@ import path from "node:path";
 import fse from "fs-extra";
 
 export const LEGACY_ROOT_DIR = ".ralphy";
-export const DEFAULT_ROOT_DIR = "ralphy-spec";
+export const DEFAULT_ROOT_DIR = "ralphy-sdd";
 
 export const FOLDERS = {
   runs: "runs",

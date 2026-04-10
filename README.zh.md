@@ -1,26 +1,26 @@
-# ralphy-spec
+# ralphy-sdd
 
 [English](README.md) | [简体中文](README.zh.md) | [한국어](README.ko.md) | [日本語](README.ja.md)
 
 **规范驱动的 AI 开发 + 迭代执行。** 结合 OpenSpec 和 Ralph 循环，实现可预测的 AI 辅助编码。
 
-**官网：** [https://ralphy-spec.org](https://ralphy-spec.org)
-**文档：** [https://ralphy-spec.org/zh/docs/](https://ralphy-spec.org/zh/docs/)
-**更新日志：** [https://ralphy-spec.org/zh/changelog/](https://ralphy-spec.org/zh/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**官网：** [https://ralphy-sdd.org](https://ralphy-sdd.org)
+**文档：** [https://ralphy-sdd.org/zh/docs/](https://ralphy-sdd.org/zh/docs/)
+**更新日志：** [https://ralphy-sdd.org/zh/changelog/](https://ralphy-sdd.org/zh/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
 
 ## 快速开始
 
 ```bash
-npx ralphy-spec init
+npx ralphy-sdd init
 ```
 
 CLI 基础用法：
 
 ```bash
-ralphy-spec run --dry-run
-ralphy-spec run
-ralphy-spec status
-ralphy-spec budget --json
+ralphy-sdd run --dry-run
+ralphy-sdd run
+ralphy-sdd status
+ralphy-sdd budget --json
 ```
 
 然后使用你的 AI 工具对应的命令：
@@ -90,9 +90,9 @@ openspec/
 ├── archive/              # 已完成
 └── project.md            # 上下文
 
-ralphy-spec/              # 本地状态 + 可读产物（IDE 友好）
+ralphy-sdd/              # 本地状态 + 可读产物（IDE 友好）
 ├── state.db              # SQLite 运行/任务日志
-├── STATUS.md             # 实时状态（`ralphy-spec status` 优先读取）
+├── STATUS.md             # 实时状态（`ralphy-sdd status` 优先读取）
 ├── TASKS.md              # 任务看板
 ├── BUDGET.md             # 花费/预算
 ├── runs/                 # 不可变运行日志（`runs/<runId>.md`）
@@ -105,7 +105,7 @@ ralphy-spec/              # 本地状态 + 可读产物（IDE 友好）
         └── NOTES.md
 ```
 
-> 注意：如果检测到旧的 `.ralphy/`，会自动迁移到 `ralphy-spec/` 并提示。
+> 注意：如果检测到旧的 `.ralphy/`，会自动迁移到 `ralphy-sdd/` 并提示。
 
 ## 工作原理
 
@@ -126,14 +126,14 @@ ralphy-spec/              # 本地状态 + 可读产物（IDE 友好）
 
 ```bash
 # npx（推荐）
-npx ralphy-spec init
+npx ralphy-sdd init
 
 # 全局安装
-npm install -g ralphy-spec
-ralphy-spec init
+npm install -g ralphy-sdd
+ralphy-sdd init
 
 # 指定工具
-ralphy-spec init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools cursor,claude-code,opencode
 ```
 
 ## 致谢

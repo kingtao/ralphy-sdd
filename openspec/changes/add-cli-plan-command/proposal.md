@@ -1,11 +1,11 @@
-# Proposal: Add `ralphy-spec plan` (CLI-driven planning)
+# Proposal: Add `ralphy-sdd plan` (CLI-driven planning)
 
 ## Summary
-Add a new CLI command, `ralphy-spec plan`, that converts user requirements (string prompt or PRD file) plus optional reference documents into:
+Add a new CLI command, `ralphy-sdd plan`, that converts user requirements (string prompt or PRD file) plus optional reference documents into:
 
 - An OpenSpec change folder under `openspec/changes/<changeId>/` (`proposal.md`, `tasks.md`, and `specs/**` deltas)
 - A machine-executable task plan written into `openspec/project.yml` (tasks, budgets, validators, file contracts, acceptance)
-- Artifacts indicating that PLAN is complete (`ralphy-spec/STATUS.md` and `ralphy-spec/runs/<runId>.md`)
+- Artifacts indicating that PLAN is complete (`ralphy-sdd/STATUS.md` and `ralphy-sdd/runs/<runId>.md`)
 
 This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it runnable from a plain terminal so users are not forced into Cursor/Claude Code to bootstrap specs.
 
@@ -15,11 +15,11 @@ This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it run
 - Better task execution: planning can enforce sprint sizing, three-tier budgets, file contracts, and validator mapping so `run` has bounded context and smaller tasks.
 
 ## Scope
-- Add `ralphy-spec plan <input|file>` supporting:
-  - `ralphy-spec plan "I want to build a website for my xxx"`
-  - `ralphy-spec plan prd.md`
-  - `ralphy-spec plan "..." --ref reference.md --ref docs/notes.md`
-  - `ralphy-spec plan prd.md --ref docs/*.md`
+- Add `ralphy-sdd plan <input|file>` supporting:
+  - `ralphy-sdd plan "I want to build a website for my xxx"`
+  - `ralphy-sdd plan prd.md`
+  - `ralphy-sdd plan "..." --ref reference.md --ref docs/notes.md`
+  - `ralphy-sdd plan prd.md --ref docs/*.md`
 - Implement required flags:
   - `--dir <path>`: repo root (consistent with `init`/`validate`)
   - `--backend <cursor|opencode|claude-code|noop>`: default matches `run` behavior (project default)
@@ -33,14 +33,14 @@ This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it run
 - After generation, automatically run validation (at minimum: OpenSpec scaffold sanity + project.yml schema load) and fail fast on invalid output.
 
 ## Non-goals
-- Implementing the planned tasks (that remains `ralphy-spec run`).
+- Implementing the planned tasks (that remains `ralphy-sdd run`).
 - Changing the on-disk schema beyond what `openspec/project.yml` already supports.
 - Rewriting or migrating existing archived specs into `openspec/specs/`.
 - Adding an interactive PRD editor or UI.
 - Auto-splitting “XL tasks” (may be added later as a follow-up improvement).
 
 ## Assumptions
-- Users run `ralphy-spec init` first; `plan` may validate and refuse to proceed if required scaffold/prompt templates are missing.
+- Users run `ralphy-sdd init` first; `plan` may validate and refuse to proceed if required scaffold/prompt templates are missing.
 - The planner backend is invoked as a one-shot command (or a bounded loop), and writes files in the repo.
 - `openspec/specs/` may be empty; the planner must still be able to create a coherent change folder and tasks.
 
@@ -51,7 +51,7 @@ This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it run
 - **Prompt injection via refs**: treat reference docs as untrusted input; planning prompt must clearly constrain allowed outputs.
 
 ## Success Criteria
-- Users can run `ralphy-spec init`, then `ralphy-spec plan ...`, then `ralphy-spec run` without opening an IDE.
+- Users can run `ralphy-sdd init`, then `ralphy-sdd plan ...`, then `ralphy-sdd run` without opening an IDE.
 - `plan` produces deterministic, schema-valid `openspec/project.yml` tasks including:
   - sprint sizing + intent (optional but preferred)
   - three-tier budgets
@@ -60,16 +60,16 @@ This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it run
   - explicit acceptance per task
 - `plan` writes artifacts marking PLAN completion, and emits JSON when `--json` is supplied.
 
-# Change Proposal: v0.4.0 — Add `ralphy-spec plan` (CLI-driven OpenSpec planning)
+# Change Proposal: v0.4.0 — Add `ralphy-sdd plan` (CLI-driven OpenSpec planning)
 
 **Type:** Feature / Workflow enhancement  
-**Depends on:** `ralphy-spec v2.1` (budgets, sprint semantics, artifacts)  
+**Depends on:** `ralphy-sdd v2.1` (budgets, sprint semantics, artifacts)  
 
 ## Summary
 
 Add a new CLI command:
 
-- `ralphy-spec plan <input>` (string prompt or PRD file)
+- `ralphy-sdd plan <input>` (string prompt or PRD file)
 
 So users can bootstrap OpenSpec changes and tasks from the terminal without needing Cursor/Claude Code interactive commands.
 
@@ -90,7 +90,7 @@ This command generates the same planning artifacts promised by `/ralphy-plan`, b
 
 ## Goals
 
-- Provide `ralphy-spec plan` as a CLI command that can:
+- Provide `ralphy-sdd plan` as a CLI command that can:
   - Accept prompt text or a PRD file
   - Include optional reference files (`--ref`, repeatable; supports globs)
   - Select backend (`--backend`) using the same backend ids as `run`
@@ -133,8 +133,8 @@ This command generates the same planning artifacts promised by `/ralphy-plan`, b
   - Ensure expected change folder and required files exist
 
 - Write artifacts:
-  - `ralphy-spec/STATUS.md` with phase “PLAN completed”
-  - `ralphy-spec/runs/<runId>.md` describing input + output + validation results
+  - `ralphy-sdd/STATUS.md` with phase “PLAN completed”
+  - `ralphy-sdd/runs/<runId>.md` describing input + output + validation results
 
 ## Risks
 
@@ -144,8 +144,8 @@ This command generates the same planning artifacts promised by `/ralphy-plan`, b
 
 ## Success Criteria
 
-- Running `ralphy-spec plan "..."` creates a new `openspec/changes/<changeId>/` folder with `proposal.md`, `tasks.md`, and `specs/**`.
-- `openspec/project.yml` becomes runnable immediately with `ralphy-spec run --dry-run`.
-- `ralphy-spec/STATUS.md` indicates PLAN completed and points to the generated change.
+- Running `ralphy-sdd plan "..."` creates a new `openspec/changes/<changeId>/` folder with `proposal.md`, `tasks.md`, and `specs/**`.
+- `openspec/project.yml` becomes runnable immediately with `ralphy-sdd run --dry-run`.
+- `ralphy-sdd/STATUS.md` indicates PLAN completed and points to the generated change.
 - A deterministic post-plan validation step passes (schema + required files).
 

@@ -1,6 +1,6 @@
-# Project Context: ralphy-spec
+# Project Context: ralphy-sdd
 
-ralphy-spec is a CLI tool that combines OpenSpec (spec-driven development) with Ralph Loop (iterative AI execution) for predictable AI-assisted coding across Cursor, OpenCode, and Claude Code.
+ralphy-sdd is a CLI tool that combines OpenSpec (spec-driven development) with Ralph Loop (iterative AI execution) for predictable AI-assisted coding across Cursor, OpenCode, and Claude Code.
 
 ## Stack
 - Language: TypeScript
@@ -27,12 +27,12 @@ ralphy-spec is a CLI tool that combines OpenSpec (spec-driven development) with 
 - **Workspace** (`src/core/workspace/`) - Patch mode, worktree mode
 
 ## CLI Commands
-- `ralphy-spec init` - Initialize project with openspec/project.yml
-- `ralphy-spec run` - Execute tasks with AI backend
-- `ralphy-spec status` - Show current run state
-- `ralphy-spec report` - Generate markdown report
-- `ralphy-spec tail` - Stream ledger events
-- `ralphy-spec checkpoint` - Manual checkpoint creation
+- `ralphy-sdd init` - Initialize project with openspec/project.yml
+- `ralphy-sdd run` - Execute tasks with AI backend
+- `ralphy-sdd status` - Show current run state
+- `ralphy-sdd report` - Generate markdown report
+- `ralphy-sdd tail` - Stream ledger events
+- `ralphy-sdd checkpoint` - Manual checkpoint creation
 
 ## Conventions
 - Code style: TypeScript strict mode

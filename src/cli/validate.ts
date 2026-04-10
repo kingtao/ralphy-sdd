@@ -31,7 +31,8 @@ export function registerValidateCommand(program: Command): void {
       "--tools <list>",
       "Comma-separated list: cursor,claude-code,opencode (default: detect)"
     )
-    .action(async (opts: { dir?: string; tools?: string; task?: string }) => {
+    .option("--no-openspec", "Skip OpenSpec CLI validation, use built-in checks only")
+    .action(async (opts: { dir?: string; tools?: string; task?: string; openspec?: boolean }) => {
       const dir = resolveProjectDir(opts.dir);
 
       if (opts.task) {
@@ -76,16 +77,33 @@ export function registerValidateCommand(program: Command): void {
       const tools = parseToolsArg(opts.tools) ?? (await detectExistingTools(dir));
       const issues = await validateProject(dir, tools);
 
+      // Separate built-in vs openspec issues for display
+      const builtinIssues = issues.filter((i) => !i.message.startsWith("[openspec]"));
+      const openspecIssues = issues.filter((i) => i.message.startsWith("[openspec]"));
+
       if (!issues.length) {
         process.stdout.write("OK: Ralph-OpenSpec setup looks good.\n");
         return;
       }
 
-      for (const issue of issues) {
-        const prefix = issue.level === "error" ? "ERROR" : "WARN";
-        process.stdout.write(
-          `${prefix}: ${issue.message}${issue.path ? ` (${issue.path})` : ""}\n`
-        );
+      if (builtinIssues.length) {
+        process.stdout.write("── Built-in checks ──\n");
+        for (const issue of builtinIssues) {
+          const prefix = issue.level === "error" ? "ERROR" : "WARN";
+          process.stdout.write(
+            `${prefix}: ${issue.message}${issue.path ? ` (${issue.path})` : ""}\n`
+          );
+        }
+      }
+
+      if (openspecIssues.length) {
+        process.stdout.write("\n── OpenSpec CLI validation ──\n");
+        for (const issue of openspecIssues) {
+          const prefix = issue.level === "error" ? "ERROR" : "WARN";
+          process.stdout.write(
+            `${prefix}: ${issue.message}${issue.path ? ` (${issue.path})` : ""}\n`
+          );
+        }
       }
 
       const hasErrors = issues.some((i) => i.level === "error");

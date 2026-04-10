@@ -1,4 +1,4 @@
--- ralphy-spec v2 schema (SQLite)
+-- ralphy-sdd v2 schema (SQLite)
 
 CREATE TABLE IF NOT EXISTS runs (
   id TEXT PRIMARY KEY,

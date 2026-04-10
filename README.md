@@ -1,32 +1,32 @@
-# ralphy-spec
+# ralphy-sdd
 
 [English](README.md) | [简体中文](README.zh.md) | [한국어](README.ko.md) | [日本語](README.ja.md)
 
 **Spec-driven AI development with iterative execution.** Combines OpenSpec + Ralph Loop for predictable AI-assisted coding.
 
-**Website:** [https://ralphy-spec.org](https://ralphy-spec.org)
-**Docs:** [https://ralphy-spec.org/en/docs/](https://ralphy-spec.org/en/docs/)
-**Changelog:** [https://ralphy-spec.org/en/changelog/](https://ralphy-spec.org/en/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**Website:** [https://ralphy-sdd.org](https://ralphy-sdd.org)
+**Docs:** [https://ralphy-sdd.org/en/docs/](https://ralphy-sdd.org/en/docs/)
+**Changelog:** [https://ralphy-sdd.org/en/changelog/](https://ralphy-sdd.org/en/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
 
 ## Quick Start
 
 ```bash
-npx ralphy-spec init
+npx ralphy-sdd init
 ```
 
 CLI basics:
 
 ```bash
-ralphy-spec run --dry-run
-ralphy-spec run
-ralphy-spec status
-ralphy-spec budget --json
+ralphy-sdd run --dry-run
+ralphy-sdd run
+ralphy-sdd status
+ralphy-sdd budget --json
 ```
 
 Logs & artifacts (during/after runs):
-- `ralphy-spec/STATUS.md`: live status (primary)
-- `ralphy-spec/runs/<runId>.md`: run log (immutable on completion)
-- `ralphy-spec/logs/<runId>/...`: backend transcripts (stdout/stderr + metadata)
+- `ralphy-sdd/STATUS.md`: live status (primary)
+- `ralphy-sdd/runs/<runId>.md`: run log (immutable on completion)
+- `ralphy-sdd/logs/<runId>/...`: backend transcripts (stdout/stderr + metadata)
 
 Then use the commands for your AI tool:
 
@@ -45,7 +45,7 @@ If you want to run the full workflow from a terminal with Cursor as the backend 
 cursor agent login
 # or set CURSOR_API_KEY in your environment
 
-ralphy-spec run --backend cursor
+ralphy-sdd run --backend cursor
 # backend output streams by default; add --no-stream-backend to silence
 ```
 
@@ -105,9 +105,9 @@ openspec/
 ├── archive/              # Completed
 └── project.md            # Context
 
-ralphy-spec/              # Local state + artifacts (IDE-friendly)
+ralphy-sdd/              # Local state + artifacts (IDE-friendly)
 ├── state.db              # SQLite run/task ledger
-├── STATUS.md             # Live run snapshot (primary for `ralphy-spec status`)
+├── STATUS.md             # Live run snapshot (primary for `ralphy-sdd status`)
 ├── TASKS.md              # Task board view
 ├── BUDGET.md             # Spend/budget breakdown
 ├── runs/                 # Immutable run logs (`runs/<runId>.md`)
@@ -120,7 +120,7 @@ ralphy-spec/              # Local state + artifacts (IDE-friendly)
         └── NOTES.md
 ```
 
-> Note: Legacy `.ralphy/` folders are migrated to `ralphy-spec/` automatically when found.
+> Note: Legacy `.ralphy/` folders are migrated to `ralphy-sdd/` automatically when found.
 
 ## How It Works
 
@@ -141,14 +141,14 @@ ralphy-spec/              # Local state + artifacts (IDE-friendly)
 
 ```bash
 # npx (recommended)
-npx ralphy-spec init
+npx ralphy-sdd init
 
 # Global install
-npm install -g ralphy-spec
-ralphy-spec init
+npm install -g ralphy-sdd
+ralphy-sdd init
 
 # With specific tools
-ralphy-spec init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools cursor,claude-code,opencode
 ```
 
 ## Credits

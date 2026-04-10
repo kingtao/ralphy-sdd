@@ -60,7 +60,7 @@ export class PatchModeWorkspace implements WorkspaceManager {
   async checkpoint(taskId: string, message: string): Promise<CheckpointRef> {
     // Best effort: commit all changes. If nothing to commit, return HEAD.
     await this.git(["add", "-A"]);
-    const commitMsg = `[ralphy-spec] ${taskId}: ${message}`;
+    const commitMsg = `[ralphy-sdd] ${taskId}: ${message}`;
     try {
       await this.git(["commit", "-m", commitMsg]);
     } catch {

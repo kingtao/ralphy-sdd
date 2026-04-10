@@ -1,26 +1,26 @@
-# ralphy-spec
+# ralphy-sdd
 
 [English](README.md) | [简体中文](README.zh.md) | [한국어](README.ko.md) | [日本語](README.ja.md)
 
 **스펙 기반 AI 개발 + 반복 실행.** OpenSpec과 Ralph Loop를 결합하여 예측 가능한 AI 지원 코딩을 실현합니다.
 
-**웹사이트:** [https://ralphy-spec.org](https://ralphy-spec.org)
-**문서:** [https://ralphy-spec.org/ko/docs/](https://ralphy-spec.org/ko/docs/)
-**변경 로그:** [https://ralphy-spec.org/ko/changelog/](https://ralphy-spec.org/ko/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**웹사이트:** [https://ralphy-sdd.org](https://ralphy-sdd.org)
+**문서:** [https://ralphy-sdd.org/ko/docs/](https://ralphy-sdd.org/ko/docs/)
+**변경 로그:** [https://ralphy-sdd.org/ko/changelog/](https://ralphy-sdd.org/ko/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
 
 ## 빠른 시작
 
 ```bash
-npx ralphy-spec init
+npx ralphy-sdd init
 ```
 
 CLI 기본 사용:
 
 ```bash
-ralphy-spec run --dry-run
-ralphy-spec run
-ralphy-spec status
-ralphy-spec budget --json
+ralphy-sdd run --dry-run
+ralphy-sdd run
+ralphy-sdd status
+ralphy-sdd budget --json
 ```
 
 그런 다음 AI 도구에 맞는 명령을 사용하세요:
@@ -90,9 +90,9 @@ openspec/
 ├── archive/              # 완료됨
 └── project.md            # 컨텍스트
 
-ralphy-spec/              # 로컬 상태 + 아티팩트(IDE 친화적)
+ralphy-sdd/              # 로컬 상태 + 아티팩트(IDE 친화적)
 ├── state.db              # SQLite 실행/태스크 로그
-├── STATUS.md             # 라이브 상태(`ralphy-spec status`가 우선 사용)
+├── STATUS.md             # 라이브 상태(`ralphy-sdd status`가 우선 사용)
 ├── TASKS.md              # 태스크 보드
 ├── BUDGET.md             # 비용/예산
 ├── runs/                 # 불변 실행 로그(`runs/<runId>.md`)
@@ -105,7 +105,7 @@ ralphy-spec/              # 로컬 상태 + 아티팩트(IDE 친화적)
         └── NOTES.md
 ```
 
-> 참고: 기존 `.ralphy/` 폴더가 있으면 자동으로 `ralphy-spec/`로 마이그레이션됩니다.
+> 참고: 기존 `.ralphy/` 폴더가 있으면 자동으로 `ralphy-sdd/`로 마이그레이션됩니다.
 
 ## 작동 방식
 
@@ -126,14 +126,14 @@ ralphy-spec/              # 로컬 상태 + 아티팩트(IDE 친화적)
 
 ```bash
 # npx (권장)
-npx ralphy-spec init
+npx ralphy-sdd init
 
 # 전역 설치
-npm install -g ralphy-spec
-ralphy-spec init
+npm install -g ralphy-sdd
+ralphy-sdd init
 
 # 특정 도구 지정
-ralphy-spec init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools cursor,claude-code,opencode
 ```
 
 ## 감사의 말

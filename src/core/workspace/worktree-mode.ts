@@ -121,7 +121,7 @@ export class WorktreeModeWorkspace implements WorkspaceManager {
     // Stage and commit all changes in worktree
     await this.git(["add", "-A"], state.worktreePath);
 
-    const commitMsg = `[ralphy-spec] ${taskId}: ${message}`;
+    const commitMsg = `[ralphy-sdd] ${taskId}: ${message}`;
     try {
       await this.git(["commit", "-m", commitMsg], state.worktreePath);
     } catch {
@@ -146,7 +146,7 @@ export class WorktreeModeWorkspace implements WorkspaceManager {
     try {
       await this.git(["merge", "--squash", state.branchName], this.repoRoot);
       await this.git(
-        ["commit", "-m", `[ralphy-spec] Merge task ${taskId}`],
+        ["commit", "-m", `[ralphy-sdd] Merge task ${taskId}`],
         this.repoRoot
       );
     } catch (err: any) {

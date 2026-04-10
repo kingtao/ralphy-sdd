@@ -136,7 +136,7 @@ export class CursorBackend implements CodingBackend {
             lastActivity = now;
             const activity = reportActivity(text);
             if (activity && env.stream) {
-              process.stderr.write(`[ralphy-spec] ${activity}\n`);
+              process.stderr.write(`[ralphy-sdd] ${activity}\n`);
             }
           }
 
@@ -333,8 +333,8 @@ export class CursorBackend implements CodingBackend {
     lines.push(
       [
         `- Read OpenSpec: \`openspec/project.yml\` and any relevant files under \`openspec/specs/**\`.`,
-        `- Read task context: \`ralphy-spec/tasks/${task.id}/CONTEXT.md\`.`,
-        `- If present, read repair notes: \`ralphy-spec/tasks/${task.id}/REPAIR.md\`.`,
+        `- Read task context: \`ralphy-sdd/tasks/${task.id}/CONTEXT.md\`.`,
+        `- If present, read repair notes: \`ralphy-sdd/tasks/${task.id}/REPAIR.md\`.`,
       ].join("\n")
     );
     lines.push(``);

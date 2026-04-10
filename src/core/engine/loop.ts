@@ -56,7 +56,7 @@ export class EngineLoop {
     const progress = (line: string) => {
       if (opts.json) return;
       // Keep stdout clean for scripts; progress goes to stderr.
-      process.stderr.write(`[ralphy-spec] ${line}\n`);
+      process.stderr.write(`[ralphy-sdd] ${line}\n`);
     };
     const persistence = await PersistenceLayer.openForRepo(opts.repoRoot);
     const ledger = new LedgerLogger(persistence, runId);

@@ -1,4 +1,4 @@
-# Spec: `ralphy-spec plan` Command
+# Spec: `ralphy-sdd plan` Command
 
 ## Domain
 CLI / Commands
@@ -6,11 +6,11 @@ CLI / Commands
 ## ADDED Requirements
 
 ### Requirement: Plan Command Exists
-The CLI MUST provide a `ralphy-spec plan` command that converts requirements into an OpenSpec change + executable task plan.
+The CLI MUST provide a `ralphy-sdd plan` command that converts requirements into an OpenSpec change + executable task plan.
 
 #### Scenario: Plan from inline prompt
-- GIVEN `ralphy-spec init` has completed successfully
-- WHEN `ralphy-spec plan "I want to build a website for my xxx"` is executed
+- GIVEN `ralphy-sdd init` has completed successfully
+- WHEN `ralphy-sdd plan "I want to build a website for my xxx"` is executed
 - THEN it MUST treat the argument as the planning input
 - AND it MUST produce a change folder under `openspec/changes/<changeId>/`
 - AND it MUST update `openspec/project.yml` with planned tasks
@@ -18,7 +18,7 @@ The CLI MUST provide a `ralphy-spec plan` command that converts requirements int
 
 #### Scenario: Plan from PRD file
 - GIVEN a file `prd.md` exists
-- WHEN `ralphy-spec plan prd.md` is executed
+- WHEN `ralphy-sdd plan prd.md` is executed
 - THEN it MUST read `prd.md` as the planning input
 - AND it MUST behave identically to inline prompt planning
 
@@ -33,12 +33,12 @@ The `plan` command MUST support the following flags:
 
 #### Scenario: `--dir` selects repo root
 - GIVEN `--dir /path/to/repo`
-- WHEN `ralphy-spec plan ... --dir /path/to/repo` is executed
+- WHEN `ralphy-sdd plan ... --dir /path/to/repo` is executed
 - THEN the plan MUST read and write files relative to `/path/to/repo`
 
 #### Scenario: `--backend` overrides default
 - GIVEN `openspec/project.yml` default backend is `cursor`
-- WHEN `ralphy-spec plan ... --backend noop` is executed
+- WHEN `ralphy-sdd plan ... --backend noop` is executed
 - THEN the plan MUST invoke the `noop` backend for the planning call
 
 ### Requirement: Reference Inputs (`--ref`) Support Globs
@@ -79,7 +79,7 @@ On success, the command MUST write artifacts indicating that planning completed.
 
 #### Scenario: STATUS.md indicates PLAN completion
 - GIVEN plan completes successfully
-- WHEN `ralphy-spec/STATUS.md` is read
+- WHEN `ralphy-sdd/STATUS.md` is read
 - THEN it MUST include `phase: PLAN`
 - AND it MUST include a human-readable message indicating “PLAN completed”
 - AND it MUST include the corresponding `runId`
@@ -87,14 +87,14 @@ On success, the command MUST write artifacts indicating that planning completed.
 #### Scenario: Run log exists
 - GIVEN plan completes successfully
 - WHEN the artifact folder is inspected
-- THEN `ralphy-spec/runs/<runId>.md` MUST exist
+- THEN `ralphy-sdd/runs/<runId>.md` MUST exist
 - AND it MUST be immutable (not overwritten if already present)
 
 ### Requirement: JSON Output
 When `--json` is provided, the command MUST output machine-readable JSON to stdout.
 
 #### Scenario: JSON includes key results
-- GIVEN `ralphy-spec plan ... --json`
+- GIVEN `ralphy-sdd plan ... --json`
 - WHEN plan completes successfully
 - THEN stdout MUST be JSON with at least:
   - `ok: true`
@@ -127,11 +127,11 @@ The `plan` command MUST use deterministic exit codes.
 The documented workflow MUST support `init → plan → run` as a first-class CLI flow.
 
 #### Scenario: CLI help includes plan
-- GIVEN `ralphy-spec --help`
+- GIVEN `ralphy-sdd --help`
 - WHEN executed
 - THEN it MUST list the `plan` command and its flags
 
-# Spec Delta: `ralphy-spec plan` command
+# Spec Delta: `ralphy-sdd plan` command
 
 ## Domain
 CLI / Commands
@@ -143,14 +143,14 @@ The CLI MUST provide a `plan` command that generates OpenSpec planning artifacts
 
 #### Scenario: Plan from prompt text
 - GIVEN a repo with `openspec/` scaffold
-- WHEN `ralphy-spec plan "I want to build a website for my xxx"`
+- WHEN `ralphy-sdd plan "I want to build a website for my xxx"`
 - THEN it MUST generate a new change folder under `openspec/changes/<changeId>/`
-- AND it MUST update `openspec/project.yml` so that `ralphy-spec run --dry-run` succeeds
-- AND it MUST write `ralphy-spec/STATUS.md` indicating PLAN completed
+- AND it MUST update `openspec/project.yml` so that `ralphy-sdd run --dry-run` succeeds
+- AND it MUST write `ralphy-sdd/STATUS.md` indicating PLAN completed
 
 #### Scenario: Plan from PRD file path
 - GIVEN a file `prd.md` exists
-- WHEN `ralphy-spec plan prd.md`
+- WHEN `ralphy-sdd plan prd.md`
 - THEN it MUST treat the input as a file path (not a literal prompt string)
 - AND it MUST include `prd.md` contents in the planning context
 
@@ -166,12 +166,12 @@ The `plan` command MUST support the following flags:
 
 #### Scenario: Plan uses repo root
 - GIVEN `--dir /tmp/myrepo` is passed
-- WHEN `ralphy-spec plan "..." --dir /tmp/myrepo`
+- WHEN `ralphy-sdd plan "..." --dir /tmp/myrepo`
 - THEN it MUST read and write all repo-relative paths under `/tmp/myrepo`
 
 #### Scenario: Plan backend defaults match run
 - GIVEN `openspec/project.yml` sets `defaults.backend: "cursor"`
-- WHEN `ralphy-spec plan "..."` is executed without `--backend`
+- WHEN `ralphy-sdd plan "..."` is executed without `--backend`
 - THEN it MUST choose `"cursor"` as backend
 
 ### Requirement: Reference inputs
@@ -202,11 +202,11 @@ The `plan` command MUST create/update the following outputs:
 - `openspec/changes/<changeId>/proposal.md`
 - `openspec/changes/<changeId>/tasks.md`
 - `openspec/changes/<changeId>/specs/**/spec.md` (at least one spec delta file)
-- `ralphy-spec/STATUS.md` (indicating PLAN completed)
-- `ralphy-spec/runs/<runId>.md` (plan log)
+- `ralphy-sdd/STATUS.md` (indicating PLAN completed)
+- `ralphy-sdd/runs/<runId>.md` (plan log)
 
 #### Scenario: Minimum change folder contents
-- GIVEN `ralphy-spec plan "..."` succeeds
+- GIVEN `ralphy-sdd plan "..."` succeeds
 - THEN `openspec/changes/<changeId>/proposal.md` MUST exist
 - AND `openspec/changes/<changeId>/tasks.md` MUST exist
 - AND at least one file MUST exist under `openspec/changes/<changeId>/specs/`
@@ -229,12 +229,12 @@ If `--change` is not provided, the `plan` command MUST derive a `changeId` from 
 When `--json` is provided, the command MUST output machine-readable JSON.
 
 #### Scenario: JSON shape on success
-- GIVEN `ralphy-spec plan "..." --json` succeeds
+- GIVEN `ralphy-sdd plan "..." --json` succeeds
 - THEN stdout MUST be valid JSON
 - AND include fields: `ok`, `changeId`, `runId`, `writtenFiles`, `validation`, `warnings`
 
 #### Scenario: JSON shape on failure
-- GIVEN `ralphy-spec plan "..." --json` fails
+- GIVEN `ralphy-sdd plan "..." --json` fails
 - THEN stdout MUST be valid JSON
 - AND include fields: `ok=false`, `exitCode`, and `error`
 
@@ -256,13 +256,13 @@ The `plan` command MUST use deterministic exit codes:
 - `6`: filesystem / IO error writing outputs
 
 #### Scenario: Invalid PRD file path
-- GIVEN `ralphy-spec plan does-not-exist.md`
+- GIVEN `ralphy-sdd plan does-not-exist.md`
 - WHEN executed
 - THEN it MUST exit with code `4`
 
 ## Acceptance Criteria
 
-- [ ] `ralphy-spec plan <prompt|file>` exists and is documented in CLI help
+- [ ] `ralphy-sdd plan <prompt|file>` exists and is documented in CLI help
 - [ ] Generated outputs match the required file set
 - [ ] `--ref` globs work and are deterministic
 - [ ] `--json` mode outputs stable JSON on success and failure

@@ -4,14 +4,14 @@
 - [ ] 1.1 Confirm existing on-disk schemas and directories used by runtime
   - Acceptance criteria:
     - GIVEN current repo state
-    - WHEN `ralphy-spec init` has been run
+    - WHEN `ralphy-sdd init` has been run
     - THEN `openspec/specs/`, `openspec/changes/`, and `openspec/project.yml` exist
     - AND `SpecLoader.loadProjectSpec()` succeeds on a minimal project.yml
   - Test plan:
     - Run: `npm run typecheck`
     - Assert: no TypeScript errors
 
-## 2. CLI: `ralphy-spec plan`
+## 2. CLI: `ralphy-sdd plan`
 - [ ] 2.1 Add `plan` command entrypoint and flag parsing
   - Implementation notes:
     - New file: `src/cli/plan.ts`
@@ -19,11 +19,11 @@
     - Support inputs: inline prompt string OR file path
     - Implement required flags: `--dir`, `--backend`, `--artifact-dir`, `--ref` (repeatable), `--change`, `--json`
   - Acceptance criteria:
-    - GIVEN `ralphy-spec plan "hello"`
+    - GIVEN `ralphy-sdd plan "hello"`
     - WHEN executed
     - THEN it accepts the input as a prompt string
     - AND exits with code 0 on success
-    - GIVEN `ralphy-spec plan prd.md`
+    - GIVEN `ralphy-sdd plan prd.md`
     - WHEN `prd.md` exists
     - THEN it reads file contents as the planning input
   - Test plan:
@@ -59,7 +59,7 @@
 
 - [ ] 2.4 JSON output mode
   - Acceptance criteria:
-    - GIVEN `ralphy-spec plan ... --json`
+    - GIVEN `ralphy-sdd plan ... --json`
     - WHEN the plan completes successfully
     - THEN stdout is valid JSON describing: `ok`, `runId`, `changeId`, `filesWritten`, `taskCount`
   - Test plan:
@@ -115,11 +115,11 @@
 - [ ] 4.2 Write PLAN completion artifacts (`STATUS.md` and run log)
   - Implementation notes:
     - Use `writeStatus(...)` with `phase: "PLAN"` and a clear “PLAN completed” message
-    - Use `writeRunLogOnce(...)` to create `ralphy-spec/runs/<runId>.md`
+    - Use `writeRunLogOnce(...)` to create `ralphy-sdd/runs/<runId>.md`
   - Acceptance criteria:
     - GIVEN successful plan run
     - WHEN artifacts are inspected
-    - THEN `ralphy-spec/STATUS.md` shows `phase: PLAN`
+    - THEN `ralphy-sdd/STATUS.md` shows `phase: PLAN`
     - AND run log exists for the same `runId`
   - Test plan:
     - Run: `npm test`
@@ -127,7 +127,7 @@
 ## 5. Validation (post-plan)
 - [ ] 5.1 Run schema-level validation after planning
   - Implementation notes:
-    - At minimum: run the same checks as `ralphy-spec validate` (scaffold) plus `SpecLoader.loadProjectSpec()`
+    - At minimum: run the same checks as `ralphy-sdd validate` (scaffold) plus `SpecLoader.loadProjectSpec()`
   - Acceptance criteria:
     - GIVEN the planner writes invalid YAML or invalid task schema
     - WHEN plan completes
@@ -141,7 +141,7 @@
     - Run: `npm run typecheck`
     - Run: `npm test`
 
-# Tasks: v0.4.0 — Add `ralphy-spec plan`
+# Tasks: v0.4.0 — Add `ralphy-sdd plan`
 
 **Change:** `add-cli-plan-command`  
 
@@ -149,12 +149,12 @@
 
 ## 1) CLI surface + parsing
 
-- [ ] **1.1** Add `ralphy-spec plan` command entrypoint
+- [ ] **1.1** Add `ralphy-sdd plan` command entrypoint
   - Implementation notes:
     - Create `src/cli/plan.ts` and register it in the CLI program (same pattern as `run`, `init`, `validate`).
     - Support command forms:
-      - `ralphy-spec plan "..."` (treat as prompt text)
-      - `ralphy-spec plan prd.md` (treat as file path if exists)
+      - `ralphy-sdd plan "..."` (treat as prompt text)
+      - `ralphy-sdd plan prd.md` (treat as file path if exists)
   - Flags:
     - `--dir <path>` repo root (default: cwd)
     - `--backend <cursor|opencode|claude-code|noop>` (default: same as `run`)
@@ -225,7 +225,7 @@
 - [ ] **4.2** Update `openspec/project.md` and `openspec/project.yml`
   - Implementation notes:
     - `project.md`: append/update a “Planned on …” section containing input summary + ref list.
-    - `project.yml`: inject/merge planned tasks so `ralphy-spec run --dry-run` works immediately.
+    - `project.yml`: inject/merge planned tasks so `ralphy-sdd run --dry-run` works immediately.
   - Test plan:
     - `node dist/index.js run --dry-run --json` (after build) produces a valid plan list
 
@@ -244,8 +244,8 @@
 
 - [ ] **5.2** Write PLAN artifacts
   - Implementation notes:
-    - Write `ralphy-spec/STATUS.md` with phase “PLAN completed”, plus change id and output file pointers.
-    - Write `ralphy-spec/runs/<runId>.md` with:
+    - Write `ralphy-sdd/STATUS.md` with phase “PLAN completed”, plus change id and output file pointers.
+    - Write `ralphy-sdd/runs/<runId>.md` with:
       - input summary
       - refs included
       - change id

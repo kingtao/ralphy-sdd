@@ -2,6 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { ToolId, ValidationIssue } from "../types";
 import { DEFAULT_ROOT_DIR, LEGACY_ROOT_DIR } from "../core/folders";
+import { openspec } from "../core/openspec/index.js";
+import type { OpenSpecValidationIssue } from "../core/openspec/types.js";
 
 async function exists(p: string): Promise<boolean> {
   try {
@@ -12,12 +14,24 @@ async function exists(p: string): Promise<boolean> {
   }
 }
 
+/** Map OpenSpec CLI validation issue level to ralphy-sdd level. */
+function mapLevel(level: OpenSpecValidationIssue["level"]): ValidationIssue["level"] {
+  switch (level) {
+    case "ERROR":
+      return "error";
+    case "WARNING":
+    case "INFO":
+      return "warning";
+  }
+}
+
 export async function validateProject(
   projectDir: string,
   tools: ToolId[]
 ): Promise<ValidationIssue[]> {
   const issues: ValidationIssue[] = [];
 
+  // ---- Built-in directory checks (always run) ----
   const openspecDir = path.join(projectDir, "openspec");
   if (!(await exists(openspecDir))) {
     issues.push({
@@ -65,6 +79,20 @@ export async function validateProject(
     });
   }
 
+  // ---- OpenSpec CLI enriched validation (when available) ----
+  const bridgeResult = await openspec.validate(projectDir);
+  if (bridgeResult.bridged && bridgeResult.data) {
+    const { report } = bridgeResult.data;
+    for (const item of report.items) {
+      for (const issue of item.issues) {
+        issues.push({
+          level: mapLevel(issue.level),
+          message: `[openspec] ${item.type}/${item.id}: ${issue.message}`,
+          path: issue.path ?? `openspec/${item.type === "change" ? "changes" : "specs"}/${item.id}`,
+        });
+      }
+    }
+  }
+
   return issues;
 }
-

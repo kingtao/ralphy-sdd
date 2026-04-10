@@ -10,7 +10,7 @@ import { writeBackendLog } from "./log-writer";
 export class OpenCodeBackend implements CodingBackend {
   readonly id = "opencode";
 
-  constructor(private readonly opts: { timeoutMs?: number } = {}) {}
+  constructor(private readonly opts: { timeoutMs?: number } = {}) { }
 
   async implement(env: BackendEnv, input: ImplementInput): Promise<ImplementOutput> {
     const { task, iteration, repairNotes } = input;
@@ -20,9 +20,9 @@ export class OpenCodeBackend implements CodingBackend {
 
     try {
       const startedAt = new Date().toISOString();
-      // OpenCode CLI: `opencode run --prompt "..." --non-interactive`
+      // OpenCode CLI: `opencode run "prompt text" --dangerously-skip-permissions`
       const command = "opencode";
-      const argv = ["run", "--prompt", prompt, "--non-interactive"];
+      const argv = ["run", prompt, "--dangerously-skip-permissions"];
 
       // Use task budget time limit if available, otherwise fall back to default or constructor option
       const taskTimeoutMs =
@@ -78,11 +78,10 @@ export class OpenCodeBackend implements CodingBackend {
         const timeoutMinutes = Math.floor(taskTimeoutMs / 60_000);
         return {
           ok: false,
-          message: `OpenCode timed out after ${timeoutMinutes} minute(s). The task budget allows ${task.budget?.hard?.timeMinutes ?? "N/A"} minutes. ${
-            task.budget?.hard?.timeMinutes && taskTimeoutMs >= task.budget.hard.timeMinutes * 60_000
+          message: `OpenCode timed out after ${timeoutMinutes} minute(s). The task budget allows ${task.budget?.hard?.timeMinutes ?? "N/A"} minutes. ${task.budget?.hard?.timeMinutes && taskTimeoutMs >= task.budget.hard.timeMinutes * 60_000
               ? "Consider breaking the task into smaller subtasks or increasing the task's hard.time_minutes budget."
               : "The task may be too complex or OpenCode may need more time. Check the backend log for details."
-          }`,
+            }`,
         };
       }
 

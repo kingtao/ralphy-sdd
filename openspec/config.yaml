@@ -1,0 +1,6 @@
+# OpenSpec project configuration
+# This file enables the official OpenSpec CLI to work with this project.
+# See: https://github.com/Fission-AI/OpenSpec
+
+schema: spec-driven
+context: openspec/project.md

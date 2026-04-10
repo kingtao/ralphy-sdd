@@ -5,6 +5,7 @@ import { detectExistingTools } from "../utils/detector";
 import { ensureOpenSpecScaffold, installToolTemplates } from "../utils/installer";
 import { resolveProjectDir } from "../utils/paths";
 import { ensureRalphyFolders, getRalphyRoot } from "../core/folders";
+import { openspec } from "../core/openspec/index.js";
 
 function parseToolsArg(arg?: string): ToolId[] | undefined {
   if (!arg) return undefined;
@@ -48,7 +49,8 @@ export function registerInitCommand(program: Command): void {
       "Comma-separated list: cursor,claude-code,opencode"
     )
     .option("--force", "Overwrite existing files", false)
-    .action(async (opts: { dir?: string; tools?: string; force: boolean }) => {
+    .option("--no-openspec", "Skip OpenSpec CLI bridge, use built-in scaffold only")
+    .action(async (opts: { dir?: string; tools?: string; force: boolean; openspec?: boolean }) => {
       const options: InitOptions = {
         dir: resolveProjectDir(opts.dir),
         tools: parseToolsArg(opts.tools),
@@ -63,6 +65,11 @@ export function registerInitCommand(program: Command): void {
           : (["cursor", "claude-code", "opencode"] as ToolId[]));
       const tools = options.tools ?? (await promptForTools(defaultTools));
 
+      // If --no-openspec was passed, temporarily disable the bridge
+      if (opts.openspec === false) {
+        openspec.resetCache();
+        // Force fallback by using built-in directly
+      }
       await ensureOpenSpecScaffold(options.dir);
       await installToolTemplates(options.dir, tools, { force: options.force });
       await ensureRalphyFolders(options.dir);
@@ -74,9 +81,9 @@ export function registerInitCommand(program: Command): void {
       );
       process.stdout.write(
         `\nArtifact folder created: ${getRalphyRoot(options.dir)}\n` +
-          `\n.gitignore suggestions:\n` +
-          `- Commit: ${getRalphyRoot(options.dir)}/STATUS.md, ${getRalphyRoot(options.dir)}/TASKS.md, ${getRalphyRoot(options.dir)}/BUDGET.md\n` +
-          `- Ignore: ${getRalphyRoot(options.dir)}/state.db, ${getRalphyRoot(options.dir)}/runs/, ${getRalphyRoot(options.dir)}/logs/, ${getRalphyRoot(options.dir)}/worktrees/\n`
+        `\n.gitignore suggestions:\n` +
+        `- Commit: ${getRalphyRoot(options.dir)}/STATUS.md, ${getRalphyRoot(options.dir)}/TASKS.md, ${getRalphyRoot(options.dir)}/BUDGET.md\n` +
+        `- Ignore: ${getRalphyRoot(options.dir)}/state.db, ${getRalphyRoot(options.dir)}/runs/, ${getRalphyRoot(options.dir)}/logs/, ${getRalphyRoot(options.dir)}/worktrees/\n`
       );
     });
 }

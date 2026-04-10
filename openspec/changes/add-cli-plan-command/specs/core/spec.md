@@ -6,7 +6,7 @@ Core / Planning
 ## ADDED Requirements
 
 ### Requirement: Planning Context Pack
-The system MUST be able to construct a Planning Context Pack for `ralphy-spec plan`.
+The system MUST be able to construct a Planning Context Pack for `ralphy-sdd plan`.
 
 #### Scenario: Context pack includes required inputs
 - GIVEN a planning input (inline prompt or PRD file) and zero or more `--ref` files
@@ -18,23 +18,23 @@ The system MUST be able to construct a Planning Context Pack for `ralphy-spec pl
   - explicit constraints: “PLAN MODE: only write OpenSpec files and artifacts; do not implement product code”
 
 ### Requirement: Planning Prompt Reuses Installed Templates
-The `plan` command MUST reuse the planning prompt templates installed by `ralphy-spec init` when available.
+The `plan` command MUST reuse the planning prompt templates installed by `ralphy-sdd init` when available.
 
 #### Scenario: Cursor template preferred for cursor backend
 - GIVEN backend is `cursor`
 - AND `.cursor/prompts/ralphy-plan.md` exists
-- WHEN `ralphy-spec plan` runs
+- WHEN `ralphy-sdd plan` runs
 - THEN it MUST use that template as the primary planning instruction payload
 
 #### Scenario: Claude Code template preferred for claude-code backend
 - GIVEN backend is `claude-code`
 - AND `.claude/commands/ralphy-plan.md` exists
-- WHEN `ralphy-spec plan` runs
+- WHEN `ralphy-sdd plan` runs
 - THEN it MUST use that template as the primary planning instruction payload
 
 #### Scenario: Fallback template
 - GIVEN no backend-specific planning template exists
-- WHEN `ralphy-spec plan` runs
+- WHEN `ralphy-sdd plan` runs
 - THEN it MUST fall back to a built-in minimal planning template that still enforces PLAN MODE constraints
 
 ### Requirement: OpenSpec-Only Writes (Scope Guard)
@@ -47,7 +47,7 @@ Planning MUST be constrained to OpenSpec and artifact outputs.
   - `openspec/project.yml`
   - `openspec/project.md` (create-if-missing only)
   - `openspec/changes/<changeId>/**`
-  - `ralphy-spec/**` (artifacts)
+  - `ralphy-sdd/**` (artifacts)
 
 #### Scenario: Disallowed writes are blocked
 - GIVEN the backend attempts to write outside the allowed paths (e.g. `src/**`, `package.json`)
@@ -101,7 +101,7 @@ After planning, the CLI MUST validate the generated OpenSpec outputs before repo
 The system SHOULD treat each task execution as an isolated backend invocation to bound context windows.
 
 #### Scenario: Fresh invocation per task
-- GIVEN `ralphy-spec run` executes tasks A then B
+- GIVEN `ralphy-sdd run` executes tasks A then B
 - WHEN the backend is invoked for task B
 - THEN it SHOULD be invoked as a fresh process call
 - AND it SHOULD not carry over prior task conversation state except via artifacts/spec files
@@ -114,10 +114,10 @@ Core / Planning + Execution Contracts
 ## ADDED Requirements
 
 ### Requirement: Planning Mode (OpenSpec-only writes)
-When running `ralphy-spec plan`, the system MUST operate in a strict “PLAN MODE”.
+When running `ralphy-sdd plan`, the system MUST operate in a strict “PLAN MODE”.
 
 #### Scenario: Plan mode forbids product code changes
-- GIVEN `ralphy-spec plan ...` is executing
+- GIVEN `ralphy-sdd plan ...` is executing
 - WHEN the backend is invoked
 - THEN the instruction payload MUST explicitly forbid changes outside OpenSpec and artifact files
 - AND the system MUST treat edits outside allowed paths as a plan failure
@@ -144,7 +144,7 @@ The planning context pack MUST include:
 - AND it MUST record truncation/omissions in the plan run log
 
 ### Requirement: Planned tasks MUST be runnable (quality gates)
-The planner output MUST produce tasks that are runnable by `ralphy-spec run` without manual edits.
+The planner output MUST produce tasks that are runnable by `ralphy-sdd run` without manual edits.
 
 For each planned task written to `openspec/project.yml`, the system MUST ensure:
 - `id` is present and unique within the project
@@ -185,7 +185,7 @@ For each task execution:
 #### Scenario: Fresh context pack per task
 - GIVEN task A completes and task B begins
 - WHEN the backend is invoked for task B
-- THEN the context pack MUST be generated from current `openspec/` + `ralphy-spec/` artifacts
+- THEN the context pack MUST be generated from current `openspec/` + `ralphy-sdd/` artifacts
 - AND MUST NOT include task A conversation transcript by default
 
 ## Acceptance Criteria

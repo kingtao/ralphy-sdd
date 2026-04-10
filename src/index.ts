@@ -13,7 +13,7 @@ function buildProgram(): Command {
   const program = new Command();
 
   program
-    .name("ralphy-spec")
+    .name("ralphy-sdd")
     .description(
       "One-command setup for Ralph loop + OpenSpec workflows across Cursor, OpenCode, and Claude Code."
     )
