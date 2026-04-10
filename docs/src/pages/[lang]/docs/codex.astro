@@ -12,39 +12,42 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<Layout title="Cursor Setup Guide">
+<Layout title="Codex Setup Guide">
   <div class="docs-page">
     <div class="container">
       <nav class="breadcrumb">
-        <a href={`${BASE}/${lang}/docs/`}>{t('docs.title')}</a> / <span>Cursor</span>
+        <a href={`${BASE}/${lang}/docs/`}>{t('docs.title')}</a> / <span>Codex</span>
       </nav>
 
-      <h1>⚡ Cursor Setup Guide</h1>
+      <h1>🚀 Codex Setup Guide</h1>
       
       <section class="docs-section">
         <h2>Installation</h2>
-        <p>Initialize Ralphy-SDD with Cursor support:</p>
+        <p>Initialize Ralphy-SDD with Codex support:</p>
         <pre><code>cd your-project
-ralphy-sdd init --tools cursor</code></pre>
+ralphy-sdd init --tools codex</code></pre>
         
-        <p>Or select Cursor during interactive setup:</p>
+        <p>Or select Codex during interactive setup:</p>
         <pre><code>ralphy-sdd init</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>What Gets Installed</h2>
-        <p>Ralphy-SDD creates the following files for Cursor:</p>
-        <pre><code>.cursor/
-└── prompts/
-    ├── ralphy-plan.md
-    ├── ralphy-implement.md
-    ├── ralphy-validate.md
-    └── ralphy-archive.md</code></pre>
+        <p>Ralphy-SDD uses Codex as a backend — no IDE-specific prompt files are needed. Codex runs via the <code>codex</code> CLI in <code>--full-auto</code> mode for non-interactive, sandboxed execution.</p>
+        <pre><code>openspec/
+├── specs/
+├── changes/
+└── project.md
+
+ralphy-sdd/
+├── STATUS.md
+├── TASKS.md
+└── BUDGET.md</code></pre>
       </section>
 
       <section class="docs-section">
         <h2>Using the Commands</h2>
-        <p>In Cursor, use the slash commands to trigger each workflow phase:</p>
+        <p>In your IDE (e.g. Cursor, Windsurf), use the slash commands to trigger each workflow phase:</p>
         
         <div class="command-card">
           <h3><code>/ralphy-plan</code></h3>
@@ -72,21 +75,21 @@ ralphy-sdd init --tools cursor</code></pre>
       </section>
 
       <section class="docs-section">
-        <h2>Terminal workflow (Cursor as backend)</h2>
-        <p>If you want to run <code>ralphy-sdd</code> fully from a terminal and use Cursor for execution (<code>--backend cursor</code>), you must authenticate Cursor Agent first:</p>
-        <pre><code>cursor agent login
-cursor agent status</code></pre>
+        <h2>Terminal workflow (Codex as backend)</h2>
+        <p>If you want to run <code>ralphy-sdd</code> fully from a terminal and use Codex for execution (<code>--backend codex</code>), you must authenticate Codex Agent first:</p>
+        <pre><code>codex agent login
+codex agent status</code></pre>
         <p>Then run the CLI:</p>
         <pre><code>ralphy-sdd run --dry-run
-ralphy-sdd run --backend cursor</code></pre>
+ralphy-sdd run --backend codex</code></pre>
         <p class="muted">Backend output is streamed by default. Use <code>--no-stream-backend</code> to disable streaming.</p>
-        <p class="muted">Tip: for CI or non-interactive environments, set <code>CURSOR_API_KEY</code> instead of using <code>cursor agent login</code>.</p>
       </section>
 
       <section class="docs-section">
-        <h2>Tips for Cursor</h2>
+        <h2>Tips for Codex</h2>
         <ul>
-          <li>Restart Cursor after running <code>ralphy-sdd init</code> to load the new slash commands</li>
+          <li>Codex runs in <code>--full-auto</code> mode for non-interactive execution</li>
+          <li>Install Codex CLI via: <code>npm i -g @openai/codex</code></li>
           <li>Use <code>@openspec/</code> to reference spec files in your prompts</li>
           <li>The commands work best in Agent mode for multi-step tasks</li>
         </ul>

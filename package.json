@@ -1,7 +1,7 @@
 {
   "name": "ralphy-sdd",
   "version": "0.3.6",
-  "description": "One-command setup for Ralph loop + OpenSpec workflows across Cursor, OpenCode, and Claude Code.",
+  "description": "One-command setup for Ralph loop + OpenSpec workflows across Codex, OpenCode, and Claude Code.",
   "license": "BSD-3-Clause",
   "author": "Wenqing Yu",
   "homepage": "https://ralphy-sdd.org",
@@ -17,7 +17,7 @@
     "ralph",
     "ralph-wiggum",
     "ai",
-    "cursor",
+    "codex",
     "claude",
     "claude-code",
     "opencode",

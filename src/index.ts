@@ -15,7 +15,7 @@ function buildProgram(): Command {
   program
     .name("ralphy-sdd")
     .description(
-      "One-command setup for Ralph loop + OpenSpec workflows across Cursor, OpenCode, and Claude Code."
+      "One-command setup for Ralph loop + OpenSpec workflows across Codex, OpenCode, and Claude Code."
     )
     .version("0.3.6");
 

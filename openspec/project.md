@@ -1,6 +1,6 @@
 # Project Context: ralphy-sdd
 
-ralphy-sdd is a CLI tool that combines OpenSpec (spec-driven development) with Ralph Loop (iterative AI execution) for predictable AI-assisted coding across Cursor, OpenCode, and Claude Code.
+ralphy-sdd is a CLI tool that combines OpenSpec (spec-driven development) with Ralph Loop (iterative AI execution) for predictable AI-assisted coding across Codex, OpenCode, and Claude Code.
 
 ## Stack
 - Language: TypeScript
@@ -13,14 +13,14 @@ ralphy-sdd is a CLI tool that combines OpenSpec (spec-driven development) with R
 ## Architecture (v2)
 - CLI framework: commander
 - Self-correcting execution engine with budget tracking
-- Supports: Cursor, Claude Code, OpenCode
+- Supports: Codex, Claude Code, OpenCode
 - Workflow phases: PLAN → PREP → EXEC → VALIDATE → DIAGNOSE → REPAIR → CHECKPOINT → DONE
 - Workspace modes: patch (default), worktree
 
 ## Core Components
 - **Engine** (`src/core/engine/`) - Loop state machine, repair logic, context packing
 - **Spec Loader** (`src/core/spec/`) - Zod schemas, DAG builder, file contracts
-- **Backends** (`src/core/backends/`) - Cursor, OpenCode, ClaudeCode adapters
+- **Backends** (`src/core/backends/`) - Codex, OpenCode, ClaudeCode adapters
 - **Validators** (`src/core/validators/`) - Runner + parsers (tsc, eslint, jest)
 - **Budgets** (`src/core/budgets/`) - Tier tracking, degrade mode
 - **Memory** (`src/core/memory/`) - SQLite persistence, ledger logging

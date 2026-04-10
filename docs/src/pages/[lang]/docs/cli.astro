@@ -29,13 +29,13 @@ ralphy-sdd budget --json</code></pre>
 
       <section class="docs-section">
         <h2>Commands</h2>
-        <pre><code>ralphy-sdd init [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;] [--force]
-ralphy-sdd update [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;] [--force]
+        <pre><code>ralphy-sdd init [--dir &lt;path&gt;] [--tools &lt;codex,claude-code,opencode&gt;] [--force]
+ralphy-sdd update [--dir &lt;path&gt;] [--tools &lt;codex,claude-code,opencode&gt;] [--force]
 
-ralphy-sdd validate [--dir &lt;path&gt;] [--tools &lt;cursor,claude-code,opencode&gt;]
+ralphy-sdd validate [--dir &lt;path&gt;] [--tools &lt;codex,claude-code,opencode&gt;]
 ralphy-sdd validate --task &lt;taskId&gt; [--dir &lt;path&gt;]
 
-ralphy-sdd run [--backend &lt;cursor|opencode|claude-code|noop&gt;] [--workspace &lt;worktree|patch&gt;]
+ralphy-sdd run [--backend &lt;codex|opencode|claude-code|noop&gt;] [--workspace &lt;worktree|patch&gt;]
               [--artifact-dir &lt;dir&gt;] [--task &lt;taskId&gt;] [--no-stream-backend] [--dry-run] [--json]
 
 ralphy-sdd status [--json]
@@ -60,7 +60,9 @@ ralphy-sdd checkpoint --task &lt;taskId&gt; --message &lt;message&gt;</code></pr
       <section class="docs-section">
         <h2>Backend notes</h2>
         <ul>
-          <li><strong>Cursor</strong>: <code>--backend cursor</code> uses Cursor Agent. Run <code>cursor agent login</code> (or set <code>CURSOR_API_KEY</code>) before running <code>ralphy-sdd run</code>.</li>
+          <li><strong>Codex</strong>: <code>--backend codex</code> uses Codex Agent. Run <code>codex agent login</code> before running <code>ralphy-sdd run</code>.</li>
+          <li><strong>Claude Code</strong>: <code>--backend claude-code</code> uses the Claude CLI directly.</li>
+          <li><strong>OpenCode</strong>: <code>--backend opencode</code> uses the OpenCode CLI.</li>
         </ul>
       </section>
 

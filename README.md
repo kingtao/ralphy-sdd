@@ -43,7 +43,6 @@ If you want to run the full workflow from a terminal with Codex as the backend (
 
 ```bash
 codex agent login
-# or set CURSOR_API_KEY in your environment
 
 ralphy-sdd run --backend codex
 # backend output streams by default; add --no-stream-backend to silence

@@ -37,13 +37,13 @@ const t = useTranslations(lang);
       
       <div class="tool-tabs">
         <div class="tab-buttons">
-          <button class="tab-btn active" data-tab="cursor">Cursor</button>
+          <button class="tab-btn active" data-tab="codex">Codex</button>
           <button class="tab-btn" data-tab="claude">Claude Code</button>
           <button class="tab-btn" data-tab="opencode">OpenCode</button>
         </div>
 
-        <!-- Cursor Tab -->
-        <div class="tab-content active" id="tab-cursor">
+        <!-- Codex Tab -->
+        <div class="tab-content active" id="tab-codex">
           <div class="tab-inner">
             <div class="commands-section">
               <div class="command-row">
@@ -65,13 +65,7 @@ const t = useTranslations(lang);
             </div>
             <div class="structure-section">
               <div class="structure-label">{t('setup.filesCreated')}</div>
-              <pre><code>.cursor/prompts/
-├── ralphy-plan.md
-├── ralphy-implement.md
-├── ralphy-validate.md
-└── ralphy-archive.md
-
-openspec/
+              <pre><code>openspec/
 ├── specs/
 ├── changes/
 └── project.md
@@ -84,17 +78,13 @@ ralphy-sdd/
           </div>
           <div class="example-section">
             <div class="example-label">{t('setup.example')}</div>
-            <pre><code><span class="comment"># Plan</span>
+            <pre><code><span class="comment"># Terminal workflow</span>
+codex agent login
+ralphy-sdd run --backend codex
+
+<span class="comment"># Or use slash commands in IDE</span>
 /ralphy-plan Add user authentication with JWT
-
-<span class="comment"># Implement</span>
-/ralphy-implement add-user-auth
-
-<span class="comment"># Validate</span>
-/ralphy-validate
-
-<span class="comment"># Archive</span>
-/ralphy-archive add-user-auth</code></pre>
+/ralphy-implement add-user-auth</code></pre>
           </div>
         </div>
 

@@ -11,7 +11,7 @@ project:
   packageManager: "npm"          # user-defined: npm | pnpm | yarn | bun
 
 defaults:
-  backend: "cursor"
+  backend: "codex"
   workspaceMode: "patch"       # "worktree" | "patch"
   checkpointMode: "commit"     # "commit" | "patch"
   validators:
@@ -64,8 +64,8 @@ sprint_defaults:
     hard: { usd: 12.00, tokens: 900000, time_minutes: 100, max_iterations: 20 }
 
 backends:
-  cursor:
-    command: "cursor"
+  codex:
+    command: "codex"
     modelTiers:
       default: { hint: "balanced" }
       cheap: { hint: "cheap" }
