@@ -3,7 +3,7 @@ import path from "node:path";
 import { SpecLoader } from "../core/spec/loader";
 import { buildTaskDAG } from "../core/spec/dag";
 import { ClaudeCodeBackend } from "../core/backends/claude-code";
-import { CursorBackend } from "../core/backends/cursor";
+import { CodexBackend } from "../core/backends/codex";
 import { NoopBackend } from "../core/backends/noop";
 import { OpenCodeBackend } from "../core/backends/opencode";
 import { PatchModeWorkspace } from "../core/workspace/patch-mode";
@@ -12,8 +12,8 @@ import { EngineLoop } from "../core/engine/loop";
 
 function createBackend(id: string) {
   switch (id) {
-    case "cursor":
-      return new CursorBackend();
+    case "codex":
+      return new CodexBackend();
     case "opencode":
       return new OpenCodeBackend();
     case "claude-code":
@@ -30,7 +30,7 @@ export function registerRunCommand(program: Command): void {
   program
     .command("run")
     .description("Execute the ralphy-sdd engine loop")
-    .option("--backend <id>", "Backend id: cursor|opencode|claude-code|noop")
+    .option("--backend <id>", "Backend id: codex|opencode|claude-code|noop")
     .option("--workspace <mode>", "Workspace mode: worktree|patch")
     .option("--artifact-dir <dir>", "Override artifact root directory (enables artifacts)")
     .option("--task <taskId>", "Run a single task (skips dependency checks)")
@@ -99,7 +99,7 @@ export function registerRunCommand(program: Command): void {
           return;
         }
 
-        const backendId = opts.backend ?? spec.defaults.backend ?? "cursor";
+        const backendId = opts.backend ?? spec.defaults.backend ?? "opencode";
         const workspaceMode = opts.workspace ?? spec.defaults.workspaceMode ?? "patch";
 
         const backend = createBackend(backendId);

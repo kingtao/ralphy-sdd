@@ -68,12 +68,6 @@ sprint_defaults:
     hard: { usd: 12.00, tokens: 900000, time_minutes: 100, max_iterations: 20 }
 
 backends:
-  cursor:
-    command: "cursor"
-    modelTiers:
-      default: { hint: "balanced" }
-      cheap: { hint: "cheap" }
-      strong: { hint: "strong" }
   opencode:
     command: "opencode"
     modelTiers:
@@ -81,6 +75,10 @@ backends:
       cheap: {}
   claude_code:
     command: "claude"
+    modelTiers:
+      default: {}
+  codex:
+    command: "codex"
     modelTiers:
       default: {}
 

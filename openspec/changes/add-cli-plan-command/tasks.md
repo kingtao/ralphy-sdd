@@ -72,7 +72,7 @@
       - "PLAN MODE: only write OpenSpec files and artifacts; do not implement product code"
       - "Tasks must be sprint-sized and budgeted"
     - Prefer reading planning template from installed tool prompts:
-      - Cursor: `.cursor/prompts/ralphy-plan.md`
+      - Codex: `.codex/prompts/ralphy-plan.md`
       - Claude Code: `.claude/commands/ralphy-plan.md`
       - OpenCode: `AGENTS.md` (plus a short plan-mode header)
   - Acceptance criteria:
@@ -157,7 +157,7 @@
       - `ralphy-sdd plan prd.md` (treat as file path if exists)
   - Flags:
     - `--dir <path>` repo root (default: cwd)
-    - `--backend <cursor|opencode|claude-code|noop>` (default: same as `run`)
+    - `--backend <codex|opencode|claude-code|noop>` (default: same as `run`)
     - `--artifact-dir <dir>` (override artifact root; enables artifacts)
     - `--ref <fileOrGlob>` (repeatable; resolve relative to repo root)
     - `--change <slug>` explicit change id/slug
@@ -197,7 +197,7 @@
 - [ ] **3.1** Invoke selected backend to execute planning prompt once
   - Implementation notes:
     - Reuse the same backend ids and adapter selection logic as `run`.
-    - Reuse the installed prompt templates (Cursor/Claude/OpenCode) as the core instruction text.
+    - Reuse the installed prompt templates (Codex/Claude/OpenCode) as the core instruction text.
     - Ensure “PLAN MODE” constraint is included in the payload sent to the backend.
   - Test plan:
     - `--backend noop` path test: plan runs without external tool dependency and produces deterministic failure/success behavior.

@@ -14,7 +14,7 @@ function parseToolsArg(arg?: string): ToolId[] | undefined {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const allowed: ToolId[] = ["cursor", "claude-code", "opencode"];
+  const allowed: ToolId[] = ["codex", "claude-code", "opencode"];
   const tools: ToolId[] = [];
   for (const p of parts) {
     if ((allowed as string[]).includes(p)) tools.push(p as ToolId);
@@ -29,7 +29,7 @@ async function promptForTools(defaultTools: ToolId[]): Promise<ToolId[]> {
       name: "tools",
       message: "Which AI tools do you want to configure?",
       choices: [
-        { name: "Cursor", value: "cursor" satisfies ToolId },
+        { name: "Codex", value: "codex" satisfies ToolId },
         { name: "Claude Code", value: "claude-code" satisfies ToolId },
         { name: "OpenCode", value: "opencode" satisfies ToolId },
       ],
@@ -46,7 +46,7 @@ export function registerInitCommand(program: Command): void {
     .option("--dir <path>", "Target project directory (default: current directory)")
     .option(
       "--tools <list>",
-      "Comma-separated list: cursor,claude-code,opencode"
+      "Comma-separated list: codex,claude-code,opencode"
     )
     .option("--force", "Overwrite existing files", false)
     .option("--no-openspec", "Skip OpenSpec CLI bridge, use built-in scaffold only")
@@ -62,7 +62,7 @@ export function registerInitCommand(program: Command): void {
         options.tools ??
         (detected.length
           ? detected
-          : (["cursor", "claude-code", "opencode"] as ToolId[]));
+          : (["codex", "claude-code", "opencode"] as ToolId[]));
       const tools = options.tools ?? (await promptForTools(defaultTools));
 
       // If --no-openspec was passed, temporarily disable the bridge

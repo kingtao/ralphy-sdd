@@ -12,7 +12,7 @@ function parseToolsArg(arg?: string): ToolId[] | undefined {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const allowed: ToolId[] = ["cursor", "claude-code", "opencode"];
+  const allowed: ToolId[] = ["codex", "claude-code", "opencode"];
   const tools: ToolId[] = [];
   for (const p of parts) {
     if ((allowed as string[]).includes(p)) tools.push(p as ToolId);
@@ -27,7 +27,7 @@ async function promptForTools(defaultTools: ToolId[]): Promise<ToolId[]> {
       name: "tools",
       message: "Which AI tools do you want to update templates for?",
       choices: [
-        { name: "Cursor", value: "cursor" satisfies ToolId },
+        { name: "Codex", value: "codex" satisfies ToolId },
         { name: "Claude Code", value: "claude-code" satisfies ToolId },
         { name: "OpenCode", value: "opencode" satisfies ToolId },
       ],
@@ -42,7 +42,7 @@ export function registerUpdateCommand(program: Command): void {
     .command("update")
     .description("Update Ralph-OpenSpec templates in a project")
     .option("--dir <path>", "Target project directory (default: current directory)")
-    .option("--tools <list>", "Comma-separated list: cursor,claude-code,opencode")
+    .option("--tools <list>", "Comma-separated list: codex,claude-code,opencode")
     .option("--force", "Overwrite existing files", false)
     .action(async (opts: { dir?: string; tools?: string; force: boolean }) => {
       const dir = resolveProjectDir(opts.dir);
@@ -52,7 +52,7 @@ export function registerUpdateCommand(program: Command): void {
         parsed ??
         (detected.length
           ? detected
-          : (["cursor", "claude-code", "opencode"] as ToolId[]));
+          : (["codex", "claude-code", "opencode"] as ToolId[]));
 
       const tools = parsed ?? (await promptForTools(defaultTools));
       await installToolTemplates(dir, tools, { force: opts.force });

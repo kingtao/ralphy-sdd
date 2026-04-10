@@ -25,7 +25,7 @@ ralphy-sdd budget --json
 
 次に、AIツールに対応するコマンドを使用します：
 
-### Cursor
+### Codex
 
 | コマンド | 機能 |
 |----------|------|
@@ -76,7 +76,7 @@ You: /ralphy-archive add-user-auth
 ## 作成されるファイル
 
 ```
-.cursor/prompts/          # または .claude/commands/
+.codex/prompts/          # または .claude/commands/
 ├── ralphy-plan.md
 ├── ralphy-implement.md
 ├── ralphy-validate.md
@@ -133,7 +133,7 @@ npm install -g ralphy-sdd
 ralphy-sdd init
 
 # 特定のツールを指定
-ralphy-sdd init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools codex,claude-code,opencode
 ```
 
 ## 謝辞

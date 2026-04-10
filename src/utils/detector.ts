@@ -14,7 +14,7 @@ async function exists(p: string): Promise<boolean> {
 export async function detectExistingTools(projectDir: string): Promise<ToolId[]> {
   const found = new Set<ToolId>();
 
-  if (await exists(path.join(projectDir, ".cursor"))) found.add("cursor");
+  if (await exists(path.join(projectDir, "codex"))) found.add("codex");
   if (await exists(path.join(projectDir, ".claude"))) found.add("claude-code");
   if (await exists(path.join(projectDir, "AGENTS.md"))) found.add("opencode");
 

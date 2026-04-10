@@ -13,7 +13,7 @@ function parseToolsArg(arg?: string): ToolId[] | undefined {
     .map((s) => s.trim())
     .filter(Boolean);
 
-  const allowed: ToolId[] = ["cursor", "claude-code", "opencode"];
+  const allowed: ToolId[] = ["codex", "claude-code", "opencode"];
   const tools: ToolId[] = [];
   for (const p of parts) {
     if ((allowed as string[]).includes(p)) tools.push(p as ToolId);
@@ -29,7 +29,7 @@ export function registerValidateCommand(program: Command): void {
     .option("--task <taskId>", "Validate a specific task via validators (v2)")
     .option(
       "--tools <list>",
-      "Comma-separated list: cursor,claude-code,opencode (default: detect)"
+      "Comma-separated list: codex,claude-code,opencode (default: detect)"
     )
     .option("--no-openspec", "Skip OpenSpec CLI validation, use built-in checks only")
     .action(async (opts: { dir?: string; tools?: string; task?: string; openspec?: boolean }) => {

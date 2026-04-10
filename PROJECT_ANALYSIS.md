@@ -27,7 +27,7 @@
 
 ## 1. 项目概述
 
-**ralphy-sdd** 是一个 CLI 工具，将 **OpenSpec**（规格驱动开发）与 **Ralph Loop**（迭代式 AI 执行）结合，用于实现可预测的 AI 辅助编码。它支持跨 Cursor、OpenCode、Claude Code 三种 AI 编码工具使用。
+**ralphy-sdd** 是一个 CLI 工具，将 **OpenSpec**（规格驱动开发）与 **Ralph Loop**（迭代式 AI 执行）结合，用于实现可预测的 AI 辅助编码。它支持跨 Codex、OpenCode、Claude Code 三种 AI 编码工具使用。
 
 核心理念：
 - **Spec-driven**：以 `openspec/` 目录下的规格文件为"真相来源"（source of truth）
@@ -87,7 +87,7 @@ ralphy-openspec/
 │   │   │   └── sprint-defaults.ts # Sprint 大小默认预算
 │   │   ├── backends/             # AI 工具后端适配器
 │   │   │   ├── types.ts          # CodingBackend 接口
-│   │   │   ├── cursor.ts         # Cursor 适配器
+│   │   │   ├── codex.ts         # Codex 适配器
 │   │   │   ├── opencode.ts       # OpenCode 适配器
 │   │   │   ├── claude-code.ts    # Claude Code 适配器
 │   │   │   └── noop.ts           # 空操作后端（测试用）
@@ -116,7 +116,7 @@ ralphy-openspec/
 │   │   ├── reporting/            # 报告生成
 │   │   └── folders.ts            # 目录常量
 │   ├── templates/                # AI 工具提示模板
-│   │   ├── cursor/               # Cursor 专用模板
+│   │   ├── codex/               # Codex 专用模板
 │   │   ├── claude-code/          # Claude Code 专用模板
 │   │   ├── opencode/             # OpenCode 专用模板（AGENTS.md）
 │   │   └── shared/               # 共享模板
@@ -171,7 +171,7 @@ ralphy-openspec/
         │             │               │
         ▼             ▼               ▼
 ┌──────────┐  ┌──────────┐  ┌───────────────┐
-│ Cursor   │  │ tsc      │  │ BudgetState   │
+│ Codex   │  │ tsc      │  │ BudgetState   │
 │ OpenCode │  │ eslint   │  │ 三级预算追踪    │
 │ Claude   │  │ jest     │  └───────────────┘
 │ Noop     │  └──────────┘
@@ -385,7 +385,7 @@ project.yml → YAML.parse → Zod Schema 验证 → ProjectSpec 类型
 
 | 后端 | 命令 | 实现方式 |
 |------|------|----------|
-| Cursor | `cursor` | 调用 Cursor CLI，构建 prompt 发送给 AI |
+| Codex | `codex` | 调用 Codex CLI，构建 prompt 发送给 AI |
 | OpenCode | `opencode` | 调用 opencode CLI |
 | Claude Code | `claude` | 调用 claude CLI |
 | Noop | - | 空操作，用于测试和 dry-run |
@@ -402,7 +402,7 @@ project.yml → YAML.parse → Zod Schema 验证 → ProjectSpec 类型
 
 各后端有专用模板，通过 `ralphy-sdd init` 安装到项目中：
 
-- **Cursor**: `.cursor/prompts/ralphy-{plan,implement,validate,archive}.md`
+- **Codex**: `.codex/prompts/ralphy-{plan,implement,validate,archive}.md`
 - **Claude Code**: `.claude/commands/ralphy-{plan,implement,validate,archive}.md`
 - **OpenCode**: `AGENTS.md`
 
@@ -471,7 +471,7 @@ ralphy-sdd init
 #    或 (未来) ralphy-sdd plan "需求描述"
 
 # 3. 执行任务
-ralphy-sdd run --backend cursor
+ralphy-sdd run --backend codex
 
 # 4. 查看状态
 ralphy-sdd status
@@ -588,7 +588,7 @@ Artifact 系统采用"best-effort"设计：
 
 ### 12.3 当前运行状态
 
-最后一次运行停留在任务 `v2.1-1.3.1`（实现优雅的任务阻断），因 Cursor Agent 超时（20 分钟）而标记为 error。
+最后一次运行停留在任务 `v2.1-1.3.1`（实现优雅的任务阻断），因 Codex Agent 超时（20 分钟）而标记为 error。
 
 ---
 

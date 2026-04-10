@@ -48,7 +48,7 @@ export async function ensureOpenSpecScaffold(projectDir: string): Promise<void> 
     '  repoRoot: "."',
     "",
     "defaults:",
-    '  backend: "cursor"',
+    '  backend: "opencode"',
     '  workspaceMode: "patch"',
     '  checkpointMode: "commit"',
     "  validators: []",
@@ -92,13 +92,7 @@ export async function installToolTemplates(
 ): Promise<void> {
   const templatesRoot = getDistTemplatesDir();
 
-  // Cursor
-  if (tools.includes("cursor")) {
-    const src = path.join(templatesRoot, "cursor");
-    const dst = path.join(projectDir, ".cursor", "prompts");
-    await fse.ensureDir(dst);
-    await fse.copy(src, dst, { overwrite: opts.force, errorOnExist: false });
-  }
+  // Codex (no templates needed — uses shared prompt building)
 
   // Claude Code
   if (tools.includes("claude-code")) {

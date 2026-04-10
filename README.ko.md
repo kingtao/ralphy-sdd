@@ -25,7 +25,7 @@ ralphy-sdd budget --json
 
 그런 다음 AI 도구에 맞는 명령을 사용하세요:
 
-### Cursor
+### Codex
 
 | 명령 | 기능 |
 |------|------|
@@ -76,7 +76,7 @@ You: /ralphy-archive add-user-auth
 ## 생성되는 파일
 
 ```
-.cursor/prompts/          # 또는 .claude/commands/
+.codex/prompts/          # 또는 .claude/commands/
 ├── ralphy-plan.md
 ├── ralphy-implement.md
 ├── ralphy-validate.md
@@ -133,7 +133,7 @@ npm install -g ralphy-sdd
 ralphy-sdd init
 
 # 특정 도구 지정
-ralphy-sdd init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools codex,claude-code,opencode
 ```
 
 ## 감사의 말

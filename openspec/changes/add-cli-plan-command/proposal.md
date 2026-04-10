@@ -7,11 +7,11 @@ Add a new CLI command, `ralphy-sdd plan`, that converts user requirements (strin
 - A machine-executable task plan written into `openspec/project.yml` (tasks, budgets, validators, file contracts, acceptance)
 - Artifacts indicating that PLAN is complete (`ralphy-sdd/STATUS.md` and `ralphy-sdd/runs/<runId>.md`)
 
-This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it runnable from a plain terminal so users are not forced into Cursor/Claude Code to bootstrap specs.
+This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it runnable from a plain terminal so users are not forced into Codex/Claude Code to bootstrap specs.
 
 ## Motivation
 - Lower friction: users can run `init → plan → run` entirely from CLI.
-- Consistency: reuse the existing backend adapter layer (cursor/opencode/claude-code/noop) and artifact system.
+- Consistency: reuse the existing backend adapter layer (codex/opencode/claude-code/noop) and artifact system.
 - Better task execution: planning can enforce sprint sizing, three-tier budgets, file contracts, and validator mapping so `run` has bounded context and smaller tasks.
 
 ## Scope
@@ -22,7 +22,7 @@ This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it run
   - `ralphy-sdd plan prd.md --ref docs/*.md`
 - Implement required flags:
   - `--dir <path>`: repo root (consistent with `init`/`validate`)
-  - `--backend <cursor|opencode|claude-code|noop>`: default matches `run` behavior (project default)
+  - `--backend <codex|opencode|claude-code|noop>`: default matches `run` behavior (project default)
   - `--artifact-dir <dir>`: consistent with `run` artifacts override
   - `--ref <file>` (repeatable): reference inputs; globs expanded
   - `--change <slug>`: optional explicit change name, else derived
@@ -45,7 +45,7 @@ This mirrors what the IDE commands (`/ralphy-plan`) already do, but makes it run
 - `openspec/specs/` may be empty; the planner must still be able to create a coherent change folder and tasks.
 
 ## Risks / Mitigations
-- **Backend CLI variability (especially Cursor)**: keep adapter behavior minimal, provide clear errors if CLI is not installed, support `noop` for testing.
+- **Backend CLI variability (especially Codex)**: keep adapter behavior minimal, provide clear errors if CLI is not installed, support `noop` for testing.
 - **Overwriting user content**: default behavior should be additive and refuse to overwrite existing `openspec/changes/<changeId>` unless the folder is empty or explicitly requested (future `--force`).
 - **Change slug collisions**: derive a stable kebab-case slug with a short suffix when needed.
 - **Prompt injection via refs**: treat reference docs as untrusted input; planning prompt must clearly constrain allowed outputs.
@@ -71,7 +71,7 @@ Add a new CLI command:
 
 - `ralphy-sdd plan <input>` (string prompt or PRD file)
 
-So users can bootstrap OpenSpec changes and tasks from the terminal without needing Cursor/Claude Code interactive commands.
+So users can bootstrap OpenSpec changes and tasks from the terminal without needing Codex/Claude Code interactive commands.
 
 This command generates the same planning artifacts promised by `/ralphy-plan`, but does so via the existing backend adapter layer and artifact system.
 
@@ -79,7 +79,7 @@ This command generates the same planning artifacts promised by `/ralphy-plan`, b
 
 ### Problem
 
-- Today, “Plan” is effectively tied to IDE-specific flows (Cursor prompts / Claude Code commands), which creates friction for:
+- Today, “Plan” is effectively tied to IDE-specific flows (Codex prompts / Claude Code commands), which creates friction for:
   - CLI-first users
   - headless automation
   - quick “PRD → OpenSpec change folder” bootstrapping
@@ -116,7 +116,7 @@ This command generates the same planning artifacts promised by `/ralphy-plan`, b
 ## Approach (No New Infrastructure)
 
 - Reuse the existing prompt templates installed by `init`:
-  - `.cursor/prompts/ralphy-plan.md`
+  - `.codex/prompts/ralphy-plan.md`
   - `.claude/commands/ralphy-plan.md`
   - `AGENTS.md` (OpenCode)
 

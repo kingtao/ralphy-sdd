@@ -27,13 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test suite (Vitest) covering the above behaviors.
 
 ### Changed
-- `ralphy-sdd run` now supports `worktree` mode and real backend selection (`cursor|opencode|claude-code|noop`).
+- `ralphy-sdd run` now supports `worktree` mode and real backend selection (`codex|opencode|claude-code|noop`).
 - Docs + README (all languages) updated to reflect the new artifacts and CLI.
 
 ## [0.3.1] - 2026-01-23
 
 ### Fixed
-- `--backend cursor` now invokes **Cursor Agent** (`cursor agent --print ...`) instead of the editor CLI, and provides a clear error when Cursor Agent authentication is missing.
+- `--backend codex` now invokes **Codex Agent** (`codex agent --print ...`) instead of the editor CLI, and provides a clear error when Codex Agent authentication is missing.
 
 ## [0.3.2] - 2026-01-23
 
@@ -64,10 +64,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Real-time backend logging**: Backend logs are now written in real-time as output is received, with `[OUT]`/`[ERR]` prefixes for easier debugging.
-- **Agent activity reporting**: Cursor backend now detects and reports agent activities (thinking, executing commands, reading files, etc.) in progress messages when output is available.
+- **Agent activity reporting**: Codex backend now detects and reports agent activities (thinking, executing commands, reading files, etc.) in progress messages when output is available.
 
 ### Fixed
-- Improved error handling in Cursor backend: now properly captures and logs errors even when the process is interrupted externally (SIGTERM, SIGKILL, etc.).
+- Improved error handling in Codex backend: now properly captures and logs errors even when the process is interrupted externally (SIGTERM, SIGKILL, etc.).
 - Backend logs are now always written (best-effort) even if the subprocess throws an exception or is killed, ensuring diagnostic information is preserved.
 - Better error messages for process interruptions, distinguishing between timeouts, crashes, and external kills.
 - Real-time stdout/stderr capture: output is now captured via event listeners before piping to terminal, ensuring all output is logged even when streaming is enabled.

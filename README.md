@@ -30,7 +30,7 @@ Logs & artifacts (during/after runs):
 
 Then use the commands for your AI tool:
 
-### Cursor
+### Codex
 
 | Command | What it does |
 |---------|--------------|
@@ -39,13 +39,13 @@ Then use the commands for your AI tool:
 | `/ralphy-validate` | Verify acceptance criteria |
 | `/ralphy-archive` | Complete and archive |
 
-If you want to run the full workflow from a terminal with Cursor as the backend (no IDE slash commands), you must authenticate Cursor Agent first:
+If you want to run the full workflow from a terminal with Codex as the backend (no IDE slash commands), you must authenticate Codex Agent first:
 
 ```bash
-cursor agent login
+codex agent login
 # or set CURSOR_API_KEY in your environment
 
-ralphy-sdd run --backend cursor
+ralphy-sdd run --backend codex
 # backend output streams by default; add --no-stream-backend to silence
 ```
 
@@ -91,7 +91,7 @@ You: /ralphy-archive add-user-auth
 ## What Gets Created
 
 ```
-.cursor/prompts/          # or .claude/commands/
+.codex/prompts/          # or .claude/commands/
 ├── ralphy-plan.md
 ├── ralphy-implement.md
 ├── ralphy-validate.md
@@ -148,7 +148,7 @@ npm install -g ralphy-sdd
 ralphy-sdd init
 
 # With specific tools
-ralphy-sdd init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools codex,claude-code,opencode
 ```
 
 ## Credits

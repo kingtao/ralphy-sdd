@@ -25,7 +25,7 @@ The CLI MUST provide a `ralphy-sdd plan` command that converts requirements into
 ### Requirement: Plan Flags (Minimum)
 The `plan` command MUST support the following flags:
 - `--dir <path>`: target repo root
-- `--backend <cursor|opencode|claude-code|noop>`: backend id (default: matches `run`)
+- `--backend <codex|opencode|claude-code|noop>`: backend id (default: matches `run`)
 - `--artifact-dir <dir>`: override artifact root directory
 - `--ref <file>` (repeatable): reference inputs; globs expanded
 - `--change <slug>`: explicit change id
@@ -37,7 +37,7 @@ The `plan` command MUST support the following flags:
 - THEN the plan MUST read and write files relative to `/path/to/repo`
 
 #### Scenario: `--backend` overrides default
-- GIVEN `openspec/project.yml` default backend is `cursor`
+- GIVEN `openspec/project.yml` default backend is `codex`
 - WHEN `ralphy-sdd plan ... --backend noop` is executed
 - THEN the plan MUST invoke the `noop` backend for the planning call
 
@@ -158,7 +158,7 @@ The CLI MUST provide a `plan` command that generates OpenSpec planning artifacts
 The `plan` command MUST support the following flags:
 
 - `--dir <path>`: repo root (default: current working directory)
-- `--backend <cursor|opencode|claude-code|noop>`: planning backend (default: same resolution behavior as `run`)
+- `--backend <codex|opencode|claude-code|noop>`: planning backend (default: same resolution behavior as `run`)
 - `--artifact-dir <dir>`: override artifact root directory (enables artifacts)
 - `--ref <fileOrGlob>` (repeatable): reference file inputs
 - `--change <slug>`: explicit change id (kebab-case)
@@ -170,9 +170,9 @@ The `plan` command MUST support the following flags:
 - THEN it MUST read and write all repo-relative paths under `/tmp/myrepo`
 
 #### Scenario: Plan backend defaults match run
-- GIVEN `openspec/project.yml` sets `defaults.backend: "cursor"`
+- GIVEN `openspec/project.yml` sets `defaults.backend: "codex"`
 - WHEN `ralphy-sdd plan "..."` is executed without `--backend`
-- THEN it MUST choose `"cursor"` as backend
+- THEN it MUST choose `"codex"` as backend
 
 ### Requirement: Reference inputs
 The `plan` command MUST accept reference inputs via `--ref` and include them in the planning context pack.

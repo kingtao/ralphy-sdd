@@ -121,14 +121,14 @@ const projectSchema = z.object({
 
 const defaultsSchema = z
   .object({
-    backend: z.string().default("cursor"),
+    backend: z.string().default("opencode"),
     workspaceMode: z.enum(["worktree", "patch"]).default("patch"),
     checkpointMode: z.enum(["commit", "patch"]).default("commit"),
     validators: z.array(z.string()).default([]),
   })
   .partial()
   .transform((v) => ({
-    backend: v.backend ?? "cursor",
+    backend: v.backend ?? "opencode",
     workspaceMode: v.workspaceMode ?? "patch",
     checkpointMode: v.checkpointMode ?? "commit",
     validators: v.validators ?? [],
@@ -227,7 +227,7 @@ export const projectSpecSchema = z
     version: z.string().default("1.0"),
     project: projectSchema.default({ name: "my-project", repoRoot: "." }),
     defaults: defaultsSchema.default({
-      backend: "cursor",
+      backend: "opencode",
       workspaceMode: "patch",
       checkpointMode: "commit",
       validators: [],

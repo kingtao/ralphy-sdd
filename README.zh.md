@@ -25,7 +25,7 @@ ralphy-sdd budget --json
 
 然后使用你的 AI 工具对应的命令：
 
-### Cursor
+### Codex
 
 | 命令 | 功能 |
 |------|------|
@@ -76,7 +76,7 @@ You: /ralphy-archive add-user-auth
 ## 创建的文件
 
 ```
-.cursor/prompts/          # 或 .claude/commands/
+.codex/prompts/          # 或 .claude/commands/
 ├── ralphy-plan.md
 ├── ralphy-implement.md
 ├── ralphy-validate.md
@@ -133,7 +133,7 @@ npm install -g ralphy-sdd
 ralphy-sdd init
 
 # 指定工具
-ralphy-sdd init --tools cursor,claude-code,opencode
+ralphy-sdd init --tools codex,claude-code,opencode
 ```
 
 ## 致谢

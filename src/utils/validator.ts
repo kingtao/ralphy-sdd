@@ -48,8 +48,8 @@ export async function validateProject(
     }
   }
 
-  if (tools.includes("cursor")) {
-    const p = ".cursor/prompts/ralphy-plan.md";
+  if (tools.includes("codex")) {
+    const p = "codex (no template needed)";
     if (!(await exists(path.join(projectDir, p)))) {
       issues.push({ level: "warning", message: `Missing ${p}`, path: p });
     }

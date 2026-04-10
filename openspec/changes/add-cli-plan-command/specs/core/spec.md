@@ -20,9 +20,9 @@ The system MUST be able to construct a Planning Context Pack for `ralphy-sdd pla
 ### Requirement: Planning Prompt Reuses Installed Templates
 The `plan` command MUST reuse the planning prompt templates installed by `ralphy-sdd init` when available.
 
-#### Scenario: Cursor template preferred for cursor backend
-- GIVEN backend is `cursor`
-- AND `.cursor/prompts/ralphy-plan.md` exists
+#### Scenario: Codex template preferred for codex backend
+- GIVEN backend is `codex`
+- AND `.codex/prompts/ralphy-plan.md` exists
 - WHEN `ralphy-sdd plan` runs
 - THEN it MUST use that template as the primary planning instruction payload
 
