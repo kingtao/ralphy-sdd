@@ -6,7 +6,7 @@
 
 **Website:** [https://ralphy-sdd.org](https://ralphy-sdd.org)
 **Docs:** [https://ralphy-sdd.org/en/docs/](https://ralphy-sdd.org/en/docs/)
-**Changelog:** [https://ralphy-sdd.org/en/changelog/](https://ralphy-sdd.org/en/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**Changelog:** [https://ralphy-sdd.org/en/changelog/](https://ralphy-sdd.org/en/changelog/) · [GitHub](https://github.com/kingtao/ralphy-sdd/blob/main/CHANGELOG.md)
 
 ## Quick Start
 

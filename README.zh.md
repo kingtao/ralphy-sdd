@@ -6,7 +6,7 @@
 
 **官网：** [https://ralphy-sdd.org](https://ralphy-sdd.org)
 **文档：** [https://ralphy-sdd.org/zh/docs/](https://ralphy-sdd.org/zh/docs/)
-**更新日志：** [https://ralphy-sdd.org/zh/changelog/](https://ralphy-sdd.org/zh/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**更新日志：** [https://ralphy-sdd.org/zh/changelog/](https://ralphy-sdd.org/zh/changelog/) · [GitHub](https://github.com/kingtao/ralphy-sdd/blob/main/CHANGELOG.md)
 
 ## 快速开始
 

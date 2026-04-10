@@ -7,10 +7,10 @@
   "homepage": "https://ralphy-sdd.org",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wenqingyu/ralphy-openspec.git"
+    "url": "git+https://github.com/kingtao/ralphy-sdd.git"
   },
   "bugs": {
-    "url": "https://github.com/wenqingyu/ralphy-openspec/issues"
+    "url": "https://github.com/kingtao/ralphy-sdd/issues"
   },
   "keywords": [
     "openspec",

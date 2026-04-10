@@ -6,7 +6,7 @@
 
 **웹사이트:** [https://ralphy-sdd.org](https://ralphy-sdd.org)
 **문서:** [https://ralphy-sdd.org/ko/docs/](https://ralphy-sdd.org/ko/docs/)
-**변경 로그:** [https://ralphy-sdd.org/ko/changelog/](https://ralphy-sdd.org/ko/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**변경 로그:** [https://ralphy-sdd.org/ko/changelog/](https://ralphy-sdd.org/ko/changelog/) · [GitHub](https://github.com/kingtao/ralphy-sdd/blob/main/CHANGELOG.md)
 
 ## 빠른 시작
 

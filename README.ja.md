@@ -6,7 +6,7 @@
 
 **ウェブサイト:** [https://ralphy-sdd.org](https://ralphy-sdd.org)
 **ドキュメント:** [https://ralphy-sdd.org/ja/docs/](https://ralphy-sdd.org/ja/docs/)
-**変更履歴:** [https://ralphy-sdd.org/ja/changelog/](https://ralphy-sdd.org/ja/changelog/) · [GitHub](https://github.com/wenqingyu/ralphy-openspec/blob/main/CHANGELOG.md)
+**変更履歴:** [https://ralphy-sdd.org/ja/changelog/](https://ralphy-sdd.org/ja/changelog/) · [GitHub](https://github.com/kingtao/ralphy-sdd/blob/main/CHANGELOG.md)
 
 ## クイックスタート
 

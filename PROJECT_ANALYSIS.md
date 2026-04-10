@@ -58,7 +58,7 @@
 ## 3. 目录结构
 
 ```
-ralphy-openspec/
+ralphy-sdd/
 ├── src/                          # 源代码
 │   ├── index.ts                  # CLI 入口，注册所有命令
 │   ├── cli/                      # CLI 命令实现

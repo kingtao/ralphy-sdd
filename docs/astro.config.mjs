@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://ralphy-spec.org',
+  site: 'https://kingtao.github.io',
+  base: '/ralphy-sdd',
   output: 'static',
   i18n: {
     defaultLocale: 'en',
