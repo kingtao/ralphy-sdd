@@ -5,7 +5,7 @@ import { detectExistingTools } from "../utils/detector";
 import { ensureOpenSpecScaffold, installToolTemplates } from "../utils/installer";
 import { resolveProjectDir } from "../utils/paths";
 import { ensureRalphyFolders, getRalphyRoot } from "../core/folders";
-import { openspec } from "../core/openspec/index.js";
+import { openspec } from "../core/openspec/index";
 
 function parseToolsArg(arg?: string): ToolId[] | undefined {
   if (!arg) return undefined;

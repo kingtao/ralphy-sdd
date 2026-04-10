@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type { ToolId, ValidationIssue } from "../types";
 import { DEFAULT_ROOT_DIR, LEGACY_ROOT_DIR } from "../core/folders";
-import { openspec } from "../core/openspec/index.js";
-import type { OpenSpecValidationIssue } from "../core/openspec/types.js";
+import { openspec } from "../core/openspec/index";
+import type { OpenSpecValidationIssue } from "../core/openspec/types";
 
 async function exists(p: string): Promise<boolean> {
   try {

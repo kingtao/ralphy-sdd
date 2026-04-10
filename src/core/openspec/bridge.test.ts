@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { OpenSpecBridge } from "./bridge.js";
+import { OpenSpecBridge } from "./bridge";
 
 // We mock execa at the module level
 vi.mock("execa", () => ({

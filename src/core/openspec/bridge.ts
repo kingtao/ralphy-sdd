@@ -16,7 +16,7 @@ import {
     type OpenSpecChangeList,
     type OpenSpecInstruction,
     type BridgeResult,
-} from "./types.js";
+} from "./types";
 
 // ---------------------------------------------------------------------------
 // Constants

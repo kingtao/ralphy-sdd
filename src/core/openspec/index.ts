@@ -2,8 +2,8 @@
  * OpenSpec CLI Bridge — Public API
  */
 
-export { OpenSpecBridge } from "./bridge.js";
-export type { ExecOptions } from "./bridge.js";
+export { OpenSpecBridge } from "./bridge";
+export type { ExecOptions } from "./bridge";
 
 export type {
     BridgeResult,
@@ -13,7 +13,7 @@ export type {
     OpenSpecChangeList,
     OpenSpecChangeEntry,
     OpenSpecInstruction,
-} from "./types.js";
+} from "./types";
 
 export {
     OpenSpecValidationReportSchema,
@@ -22,9 +22,9 @@ export {
     OpenSpecChangeListSchema,
     OpenSpecChangeEntrySchema,
     OpenSpecInstructionSchema,
-} from "./types.js";
+} from "./types";
 
-import { OpenSpecBridge } from "./bridge.js";
+import { OpenSpecBridge } from "./bridge";
 
 /** Default singleton instance. */
 export const openspec = new OpenSpecBridge();

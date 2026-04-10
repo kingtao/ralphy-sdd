@@ -4,7 +4,7 @@ import fse from "fs-extra";
 import type { ToolId } from "../types";
 import { getDistTemplatesDir } from "./paths";
 import { DEFAULT_ROOT_DIR } from "../core/folders";
-import { openspec } from "../core/openspec/index.js";
+import { openspec } from "../core/openspec/index";
 
 async function ensureDir(p: string) {
   await fs.mkdir(p, { recursive: true });
