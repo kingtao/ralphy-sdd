@@ -140,3 +140,6 @@ vite.config.ts.timestamp-*
 
 # Astro cache
 .astro/
+
+# Local files (not tracked by git)
+.local/
