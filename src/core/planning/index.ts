@@ -15,7 +15,7 @@ import crypto from "node:crypto";
 import { execa } from "execa";
 import { resolveRefs, RefResolutionError } from "./refs";
 import { readRefContents } from "./refs";
-import { deriveChangeId } from "./change-id";
+import { deriveChangeId, deriveChangeIdWithAI } from "./change-id";
 import { buildContextPack } from "./context-pack";
 import type { PlanOptions } from "../../cli/plan";
 
@@ -61,7 +61,7 @@ export async function executePlanPipeline(
 
     // ── Stage 2: Derive changeId ──
     const existingChanges = listExistingChanges(repoRoot);
-    const changeId = opts.change ?? deriveChangeId(input.text, existingChanges);
+    const changeId = opts.change ?? await deriveChangeIdWithAI(input.text, existingChanges, opts.backend);
 
     if (!changeId) {
         return {
@@ -269,10 +269,7 @@ async function invokeWithProgress(
     stdinPrompt?: string,
 ): Promise<BackendInvokeResult> {
     const startTime = Date.now();
-    let lastActivity = "";
-    let toolCallCount = 0;
-    let fileWriteCount = 0;
-
+    const ctx = createProgressCtx();
     const write = (msg: string) => process.stderr.write(msg);
 
     write("\u23F3 Planning started...\n");
@@ -292,45 +289,16 @@ async function invokeWithProgress(
         child.stdin.end();
     }
 
-    // Parse JSONL events from stdout
-    let buffer = "";
-    child.stdout?.on("data", (chunk: Buffer) => {
-        buffer += chunk.toString();
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
-
-        for (const line of lines) {
-            if (!line.trim()) continue;
-            try {
-                const event = JSON.parse(line);
-                handleProgressEvent(event, write, startTime, {
-                    getToolCallCount: () => toolCallCount,
-                    incToolCallCount: () => { toolCallCount++; },
-                    getFileWriteCount: () => fileWriteCount,
-                    incFileWriteCount: () => { fileWriteCount++; },
-                    getLastActivity: () => lastActivity,
-                    setLastActivity: (a: string) => { lastActivity = a; },
-                });
-            } catch {
-                // Not valid JSON, skip
-            }
-        }
-    });
-
-    // Filter stderr — suppress known informational messages
-    child.stderr?.on("data", (chunk: Buffer) => {
-        const text = chunk.toString().trim();
-        if (!text) return;
-        // Suppress known codex info messages
-        if (text.includes("Reading prompt from stdin") || text.includes("Reading additional input")) return;
-        write(`  \u26A0 ${text.slice(0, 200)}\n`);
-    });
+    // Attach shared JSONL progress parser
+    if (child.stdout) {
+        attachJsonlProgress(child.stdout, child.stderr ?? null, write, startTime, ctx);
+    }
 
     const result = await child;
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
 
     if (result.exitCode === 0) {
-        write(`\u2705 Backend completed in ${elapsed}s (${toolCallCount} tool calls, ${fileWriteCount} file writes)\n`);
+        write(`\u2705 Backend completed in ${elapsed}s (${ctx.toolCallCount} tool calls, ${ctx.fileWriteCount} file writes)\n`);
         return { ok: true, message: `Planning completed in ${elapsed}s` };
     }
 
@@ -341,94 +309,13 @@ async function invokeWithProgress(
     };
 }
 
-type ProgressCtx = {
-    getToolCallCount: () => number;
-    incToolCallCount: () => void;
-    getFileWriteCount: () => number;
-    incFileWriteCount: () => void;
-    getLastActivity: () => string;
-    setLastActivity: (a: string) => void;
-};
-
-/**
- * Handle codex JSONL events.
- *
- * Codex event format:
- *   { type: "thread.started", thread_id: "..." }
- *   { type: "turn.started" }
- *   { type: "item.started", item: { id, type, ... } }
- *   { type: "item.completed", item: { id, type, text?, changes?, command?, status? } }
- *   { type: "turn.completed", usage: { input_tokens, output_tokens, ... } }
- */
-function handleProgressEvent(
-    event: any,
-    write: (msg: string) => void,
-    startTime: number,
-    ctx: ProgressCtx,
-): void {
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(0);
-    const type = event.type ?? "";
-
-    if (type === "turn.started") {
-        write(`  \uD83D\uDCCB [${elapsed}s] Processing...\n`);
-
-    } else if (type === "item.started") {
-        const item = event.item ?? {};
-        if (item.type === "function_call" || item.type === "tool_call") {
-            ctx.incToolCallCount();
-            const name = item.name ?? item.function ?? "tool";
-            const args = item.arguments ?? {};
-            const summary = summarizeItem(name, args);
-            write(`  \uD83D\uDD27 [${elapsed}s] ${name}${summary ? `: ${summary}` : ""}\n`);
-        } else if (item.type === "file_change") {
-            const changes = item.changes ?? [];
-            for (const c of changes) {
-                ctx.incFileWriteCount();
-                const kind = c.kind ?? "change";
-                const filePath = c.path ?? "";
-                write(`  \uD83D\uDCDD [${elapsed}s] ${kind}: ${filePath}\n`);
-            }
-        } else if (item.type === "exec" || item.type === "shell") {
-            ctx.incToolCallCount();
-            const cmd = item.command ?? item.cmd ?? "";
-            const shortCmd = cmd.length > 80 ? cmd.slice(0, 77) + "..." : cmd;
-            write(`  \uD83D\uDCBB [${elapsed}s] exec: ${shortCmd}\n`);
-        }
-
-    } else if (type === "item.completed") {
-        const item = event.item ?? {};
-        if (item.type === "agent_message" && item.text) {
-            // Show agent's thinking/summary (truncated)
-            const text = item.text.length > 120 ? item.text.slice(0, 117) + "..." : item.text;
-            write(`  \uD83D\uDCA1 [${elapsed}s] ${text}\n`);
-        } else if (item.type === "file_change" && item.status === "completed") {
-            const changes = item.changes ?? [];
-            for (const c of changes) {
-                if (ctx.getLastActivity() !== c.path) {
-                    ctx.incFileWriteCount();
-                    write(`  \u2705 [${elapsed}s] ${c.kind ?? "wrote"}: ${c.path ?? ""}\n`);
-                    ctx.setLastActivity(c.path ?? "");
-                }
-            }
-        } else if (item.type === "function_call" || item.type === "tool_call") {
-            // Tool call completed — already shown at item.started
-        }
-
-    } else if (type === "turn.completed") {
-        const usage = event.usage ?? {};
-        const tokens = (usage.input_tokens ?? 0) + (usage.output_tokens ?? 0);
-        write(`  \uD83D\uDCCA [${elapsed}s] Turn done (${tokens.toLocaleString()} tokens)\n`);
-    }
-}
-
-function summarizeItem(name: string, args: any): string {
-    if (typeof args === "string") return args.slice(0, 60);
-    const path = args?.path ?? args?.file ?? args?.command ?? "";
-    if (typeof path === "string") {
-        return path.length > 60 ? path.slice(0, 57) + "..." : path;
-    }
-    return "";
-}
+// Re-export from shared module (used by invokeWithProgress below)
+import {
+    type ProgressCtx,
+    handleProgressEvent,
+    createProgressCtx,
+    attachJsonlProgress,
+} from "../backends/codex-progress";
 
 function getBackendCommand(
     backendId: string,

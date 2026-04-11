@@ -1,11 +1,14 @@
 import { execa } from "execa";
 import type { BackendEnv, CodingBackend, ImplementInput, ImplementOutput } from "./types";
 import { writeBackendLog } from "./log-writer";
+import { createProgressCtx, attachJsonlProgress } from "./codex-progress";
 
 /**
  * CodexBackend shells out to the `codex` CLI for code implementation.
  *
  * Uses `codex exec "prompt" --full-auto` for non-interactive, sandboxed execution.
+ * When streaming is enabled, uses `--json` for JSONL event output and filters
+ * to show only key progress events (tool calls, file writes, thinking, etc.).
  * Codex CLI: https://github.com/openai/codex
  */
 export class CodexBackend implements CodingBackend {
@@ -23,6 +26,11 @@ export class CodexBackend implements CodingBackend {
             const command = "codex";
             const argv = ["exec", prompt, "--full-auto"];
 
+            // When streaming, add --json to get JSONL events for filtered progress
+            if (env.stream) {
+                argv.push("--json");
+            }
+
             // Use task budget time limit if available, otherwise fall back to default
             const taskTimeoutMs =
                 task.budget?.hard?.timeMinutes !== undefined
@@ -33,12 +41,27 @@ export class CodexBackend implements CodingBackend {
                 cwd: env.cwd,
                 timeout: taskTimeoutMs,
                 reject: false,
-                stdio: "pipe",
+                // stdin must be "ignore" (or closed immediately) to prevent codex
+                // from waiting for additional stdin input ("Reading additional input
+                // from stdin..." hang). stdout/stderr are piped for logging/streaming.
+                stdio: ["ignore", "pipe", "pipe"],
             });
 
             if (env.stream) {
-                subprocess.stdout?.pipe(process.stdout);
-                subprocess.stderr?.pipe(process.stderr);
+                // Use JSONL event stream to show filtered progress (like `plan` does)
+                const startTime = Date.now();
+                const ctx = createProgressCtx();
+                const write = (msg: string) => process.stderr.write(msg);
+
+                if (subprocess.stdout) {
+                    attachJsonlProgress(
+                        subprocess.stdout,
+                        subprocess.stderr ?? null,
+                        write,
+                        startTime,
+                        ctx,
+                    );
+                }
             }
 
             const result = await subprocess;
