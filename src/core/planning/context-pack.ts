@@ -74,6 +74,15 @@ Create a new change folder:
 Update the project plan:
 - \`openspec/project.yml\` — add planned tasks with sprint sizing, budgets, validators, file contracts, and acceptance criteria
 
+## Domain Naming Convention (IMPORTANT)
+The \`<domain>\` directory name under \`specs/\` MUST be specific and descriptive:
+- ✅ Good: \`cli-plan\`, \`backend-streaming\`, \`auth-oauth\`, \`user-profile\`
+- ❌ Bad: \`cli\`, \`core\`, \`utils\`, \`misc\`
+
+Each domain represents a distinct functional area. Use kebab-case. When in doubt, use \`<feature-area>-<aspect>\` format.
+Avoid generic names that could conflict with other changes.
+Prefer a single spec per change unless the change clearly spans multiple unrelated domains.
+
 ## Rules
 - Use MUST/SHALL language for requirements
 - Every Requirement MUST include at least one Scenario

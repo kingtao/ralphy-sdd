@@ -88,7 +88,7 @@ export async function executePlanPipeline(
     const changeDir = path.join(repoRoot, "openspec", "changes", changeId);
     let backendResult;
     try {
-        backendResult = await invokeBackend(opts.backend, repoRoot, contextPack.text);
+        backendResult = await invokeBackend(opts.backend, repoRoot, contextPack.text, opts.json);
     } catch (err: any) {
         return {
             ok: false,
@@ -197,30 +197,39 @@ async function invokeBackend(
     backendId: string,
     cwd: string,
     prompt: string,
+    jsonMode: boolean = false,
 ): Promise<BackendInvokeResult> {
     if (backendId === "noop") {
         return { ok: true, message: "Noop backend: no planning performed. Validate outputs manually." };
     }
 
-    // Write prompt to a temp file for backends that prefer file input
+    // Write prompt to a temp file (kept for diagnostics)
     const promptFile = path.join(cwd, ".ralphy-plan-prompt.tmp.md");
     try {
         fs.writeFileSync(promptFile, prompt, "utf-8");
 
-        const { command, args } = getBackendCommand(backendId, prompt, promptFile);
+        const { command, args, useJsonStream, stdinPrompt } = getBackendCommand(backendId, prompt);
 
+        if (useJsonStream && !jsonMode) {
+            // Use JSONL event stream to show filtered progress
+            return await invokeWithProgress(command, args, cwd, stdinPrompt);
+        }
+
+        // Fallback: pipe mode (for --json) or inherit (non-codex backends)
         const result = await execa(command, args, {
             cwd,
-            timeout: 600_000, // 10 minute hard cap for planning
+            timeout: 600_000,
             reject: false,
-            stdio: "pipe",
+            ...(stdinPrompt ? { input: stdinPrompt } : {}),
+            stdio: stdinPrompt
+                ? ["pipe", jsonMode ? "pipe" : "inherit", jsonMode ? "pipe" : "inherit"]
+                : jsonMode ? "pipe" : ["ignore", "inherit", "inherit"],
         });
 
         if (result.exitCode === 0) {
             return { ok: true, message: `${backendId} planning completed successfully` };
         }
 
-        // Handle ENOENT inside result
         if ((result as any).code === "ENOENT") {
             return {
                 ok: false,
@@ -241,7 +250,6 @@ async function invokeBackend(
         }
         return { ok: false, message: err?.message ?? "Unknown backend error" };
     } finally {
-        // Clean up temp file
         try {
             fs.unlinkSync(promptFile);
         } catch {
@@ -250,21 +258,210 @@ async function invokeBackend(
     }
 }
 
+/**
+ * Invoke a backend with JSONL event streaming, filtering output to show
+ * only key progress events (tool calls, file writes, thinking, etc.)
+ */
+async function invokeWithProgress(
+    command: string,
+    args: string[],
+    cwd: string,
+    stdinPrompt?: string,
+): Promise<BackendInvokeResult> {
+    const startTime = Date.now();
+    let lastActivity = "";
+    let toolCallCount = 0;
+    let fileWriteCount = 0;
+
+    const write = (msg: string) => process.stderr.write(msg);
+
+    write("\u23F3 Planning started...\n");
+
+    const child = execa(command, args, {
+        cwd,
+        timeout: 600_000,
+        reject: false,
+        stdio: ["pipe", "pipe", "pipe"],
+    });
+
+    // Send prompt via stdin and close it immediately
+    if (stdinPrompt && child.stdin) {
+        child.stdin.write(stdinPrompt);
+        child.stdin.end();
+    } else if (child.stdin) {
+        child.stdin.end();
+    }
+
+    // Parse JSONL events from stdout
+    let buffer = "";
+    child.stdout?.on("data", (chunk: Buffer) => {
+        buffer += chunk.toString();
+        const lines = buffer.split("\n");
+        buffer = lines.pop() ?? "";
+
+        for (const line of lines) {
+            if (!line.trim()) continue;
+            try {
+                const event = JSON.parse(line);
+                handleProgressEvent(event, write, startTime, {
+                    getToolCallCount: () => toolCallCount,
+                    incToolCallCount: () => { toolCallCount++; },
+                    getFileWriteCount: () => fileWriteCount,
+                    incFileWriteCount: () => { fileWriteCount++; },
+                    getLastActivity: () => lastActivity,
+                    setLastActivity: (a: string) => { lastActivity = a; },
+                });
+            } catch {
+                // Not valid JSON, skip
+            }
+        }
+    });
+
+    // Filter stderr — suppress known informational messages
+    child.stderr?.on("data", (chunk: Buffer) => {
+        const text = chunk.toString().trim();
+        if (!text) return;
+        // Suppress known codex info messages
+        if (text.includes("Reading prompt from stdin") || text.includes("Reading additional input")) return;
+        write(`  \u26A0 ${text.slice(0, 200)}\n`);
+    });
+
+    const result = await child;
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+    if (result.exitCode === 0) {
+        write(`\u2705 Backend completed in ${elapsed}s (${toolCallCount} tool calls, ${fileWriteCount} file writes)\n`);
+        return { ok: true, message: `Planning completed in ${elapsed}s` };
+    }
+
+    write(`\u274C Backend failed (exit ${result.exitCode}) after ${elapsed}s\n`);
+    return {
+        ok: false,
+        message: `Backend exited with code ${result.exitCode} after ${elapsed}s`,
+    };
+}
+
+type ProgressCtx = {
+    getToolCallCount: () => number;
+    incToolCallCount: () => void;
+    getFileWriteCount: () => number;
+    incFileWriteCount: () => void;
+    getLastActivity: () => string;
+    setLastActivity: (a: string) => void;
+};
+
+/**
+ * Handle codex JSONL events.
+ *
+ * Codex event format:
+ *   { type: "thread.started", thread_id: "..." }
+ *   { type: "turn.started" }
+ *   { type: "item.started", item: { id, type, ... } }
+ *   { type: "item.completed", item: { id, type, text?, changes?, command?, status? } }
+ *   { type: "turn.completed", usage: { input_tokens, output_tokens, ... } }
+ */
+function handleProgressEvent(
+    event: any,
+    write: (msg: string) => void,
+    startTime: number,
+    ctx: ProgressCtx,
+): void {
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(0);
+    const type = event.type ?? "";
+
+    if (type === "turn.started") {
+        write(`  \uD83D\uDCCB [${elapsed}s] Processing...\n`);
+
+    } else if (type === "item.started") {
+        const item = event.item ?? {};
+        if (item.type === "function_call" || item.type === "tool_call") {
+            ctx.incToolCallCount();
+            const name = item.name ?? item.function ?? "tool";
+            const args = item.arguments ?? {};
+            const summary = summarizeItem(name, args);
+            write(`  \uD83D\uDD27 [${elapsed}s] ${name}${summary ? `: ${summary}` : ""}\n`);
+        } else if (item.type === "file_change") {
+            const changes = item.changes ?? [];
+            for (const c of changes) {
+                ctx.incFileWriteCount();
+                const kind = c.kind ?? "change";
+                const filePath = c.path ?? "";
+                write(`  \uD83D\uDCDD [${elapsed}s] ${kind}: ${filePath}\n`);
+            }
+        } else if (item.type === "exec" || item.type === "shell") {
+            ctx.incToolCallCount();
+            const cmd = item.command ?? item.cmd ?? "";
+            const shortCmd = cmd.length > 80 ? cmd.slice(0, 77) + "..." : cmd;
+            write(`  \uD83D\uDCBB [${elapsed}s] exec: ${shortCmd}\n`);
+        }
+
+    } else if (type === "item.completed") {
+        const item = event.item ?? {};
+        if (item.type === "agent_message" && item.text) {
+            // Show agent's thinking/summary (truncated)
+            const text = item.text.length > 120 ? item.text.slice(0, 117) + "..." : item.text;
+            write(`  \uD83D\uDCA1 [${elapsed}s] ${text}\n`);
+        } else if (item.type === "file_change" && item.status === "completed") {
+            const changes = item.changes ?? [];
+            for (const c of changes) {
+                if (ctx.getLastActivity() !== c.path) {
+                    ctx.incFileWriteCount();
+                    write(`  \u2705 [${elapsed}s] ${c.kind ?? "wrote"}: ${c.path ?? ""}\n`);
+                    ctx.setLastActivity(c.path ?? "");
+                }
+            }
+        } else if (item.type === "function_call" || item.type === "tool_call") {
+            // Tool call completed — already shown at item.started
+        }
+
+    } else if (type === "turn.completed") {
+        const usage = event.usage ?? {};
+        const tokens = (usage.input_tokens ?? 0) + (usage.output_tokens ?? 0);
+        write(`  \uD83D\uDCCA [${elapsed}s] Turn done (${tokens.toLocaleString()} tokens)\n`);
+    }
+}
+
+function summarizeItem(name: string, args: any): string {
+    if (typeof args === "string") return args.slice(0, 60);
+    const path = args?.path ?? args?.file ?? args?.command ?? "";
+    if (typeof path === "string") {
+        return path.length > 60 ? path.slice(0, 57) + "..." : path;
+    }
+    return "";
+}
+
 function getBackendCommand(
     backendId: string,
     prompt: string,
-    _promptFile: string,
-): { command: string; args: string[] } {
+): { command: string; args: string[]; useJsonStream: boolean; stdinPrompt?: string } {
     switch (backendId) {
         case "codex":
-            return { command: "codex", args: ["exec", prompt, "--full-auto"] };
+            // Pass prompt via stdin (codex reads from stdin when no prompt arg given)
+            // This avoids ARG_MAX limits and the "Reading from stdin" hang
+            return {
+                command: "codex",
+                args: ["exec", "--full-auto", "--json"],
+                useJsonStream: true,
+                stdinPrompt: prompt,
+            };
         case "claude-code":
-            return { command: "claude", args: ["--print", prompt] };
+            return {
+                command: "claude",
+                args: ["--print", prompt],
+                useJsonStream: false,
+            };
         case "opencode":
-            return { command: "opencode", args: ["--prompt", prompt] };
+            return {
+                command: "opencode",
+                args: ["--prompt", prompt],
+                useJsonStream: false,
+            };
         default:
-            // Unknown backend — try to invoke it as a command with the prompt as arg
-            return { command: backendId, args: [prompt] };
+            return {
+                command: backendId,
+                args: [prompt],
+                useJsonStream: false,
+            };
     }
 }
 
